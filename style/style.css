@@ -1,0 +1,135 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: rgb(10, 10, 10);
+    color: rgb(255, 255, 255);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    background: rgba(20, 20, 20, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 65px;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: 700;
+    color: rgb(36, 161, 222);
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 30px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.nav-links a:hover, .nav-links a.active {
+    color: rgb(36, 161, 222);
+}
+
+.main-content {
+    flex: 1;
+    margin-top: 100px;
+    padding-bottom: 50px;
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 28px;
+    padding: 40px;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+}
+
+.hero-title {
+    font-size: 52px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    letter-spacing: -1px;
+}
+
+.btn-primary {
+    display: inline-block;
+    background: rgb(36, 161, 222);
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    padding: 15px 35px;
+    border-radius: 14px;
+    font-weight: 600;
+    transition: 0.3s;
+    border: none;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(36, 161, 222, 0.3);
+}
+
+.video-container {
+    width: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 30px 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+video {
+    width: 100%;
+    display: block;
+}
+
+.ai-status-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 20px;
+    border-radius: 50px;
+    width: fit-content;
+    margin-bottom: 20px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background: rgb(50, 205, 50);
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgb(50, 205, 50);
+}
