@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Заказы | PAT-STUDIO</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: rgb(255, 255, 255);
+            color: rgb(0, 0, 0);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        body.dark-theme {
+            background-color: rgb(18, 18, 18);
+            color: rgb(224, 224, 224);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            background-color: rgb(255, 255, 255);
+            padding: 20px 0;
+            border-bottom: 1px solid rgb(238, 238, 238);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        body.dark-theme .header {
+            background-color: rgb(26, 26, 26);
+            border-bottom: 1px solid rgb(51, 51, 51);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+
+        .menu-item {
+            position: relative;
+        }
+
+        .menu-item a {
+            text-decoration: none;
+            color: rgb(51, 51, 51);
+            font-size: 18px;
+            padding: 10px 5px;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-theme .menu-item a {
+            color: rgb(224, 224, 224);
+        }
+
+        .menu-item.active a {
+            color: rgb(0, 136, 204);
+        }
+
+        .menu-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: rgb(0, 136, 204);
+        }
+
+        .controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toggle-label {
+            font-size: 14px;
+            color: rgb(102, 102, 102);
+        }
+
+        body.dark-theme .toggle-label {
+            color: rgb(170, 170, 170);
+        }
+
+        .theme-toggle {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .theme-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgb(204, 204, 204);
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: rgb(255, 255, 255);
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: rgb(0, 136, 204);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        .lang-select {
+            padding: 6px 12px;
+            border: 1px solid rgb(0, 136, 204);
+            background-color: rgb(255, 255, 255);
+            color: rgb(0, 136, 204);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-theme .lang-select {
+            background-color: rgb(45, 45, 45);
+            color: rgb(0, 136, 204);
+        }
+
+        .studio-header {
+            text-align: center;
+            padding: 60px 0 40px;
+            background: linear-gradient(to bottom, rgb(248, 249, 250), rgb(255, 255, 255));
+        }
+
+        body.dark-theme .studio-header {
+            background: linear-gradient(to bottom, rgb(30, 30, 30), rgb(18, 18, 18));
+        }
+
+        .studio-name {
+            font-size: 48px;
+            color: rgb(0, 136, 204);
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .reasons-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .reason-item {
+            text-align: center;
+            padding: 20px;
+            opacity: 0;
+            transform: translateY(60px);
+            transition: opacity 0.25s ease-out, transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .reason-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reason-item:hover {
+            transform: translateY(-5px) scale(1.02);
+            transition: transform 0.3s ease;
+        }
+
+        .reason-video {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            margin: 0 auto 15px;
+            border-radius: 8px;
+            display: block;
+        }
+
+        .reason-title {
+            font-size: 22px;
+            color: rgb(0, 136, 204);
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .reason-text {
+            font-size: 16px;
+            color: rgb(102, 102, 102);
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        body.dark-theme .reason-text {
+            color: rgb(170, 170, 170);
+        }
+
+        .reason-list {
+            list-style: none;
+            margin-top: 10px;
+            display: inline-block;
+            text-align: left;
+        }
+
+        .reason-list li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 8px;
+        }
+
+        .reason-list li::before {
+            content: "•";
+            color: rgb(0, 136, 204);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        .approach-box {
+            padding: 40px 0;
+            margin-top: 40px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+
+        .approach-box.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .footer {
+            background-color: rgb(248, 249, 250);
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid rgb(238, 238, 238);
+            margin-top: 60px;
+        }
+
+        body.dark-theme .footer {
+            background-color: rgb(26, 26, 26);
+            border-top: 1px solid rgb(51, 51, 51);
+        }
+
+        .footer-logo {
+            font-size: 18px;
+            font-weight: bold;
+            color: rgb(0, 136, 204);
+            margin-bottom: 10px;
+        }
+
+        .footer-copyright {
+            font-size: 14px;
+            color: rgb(136, 136, 136);
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            .reasons-grid {
+                grid-template-columns: 1fr;
+            }
+            .menu {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="container">
+            <div class="header-content">
+                <ul class="menu">
+                    <li class="menu-item">
+                        <a href="index.html" data-ru="главная" data-en="home">главная</a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="about.html" data-ru="информация" data-en="about">информация</a>
+                    </li>
+                    <li class="menu-item active">
+                        <a href="orders.html" data-ru="заказы" data-en="orders">заказы</a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="chat.html" data-ru="чат" data-en="chat">чат</a>
+                    </li>
+                </ul>
+                <div class="controls">
+                    <div class="toggle-container">
+                        <span class="toggle-label" data-ru="Тема" data-en="Theme">Тема</span>
+                        <label class="theme-toggle">
+                            <input type="checkbox" id="themeSwitch">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <select class="lang-select" id="languageSelect">
+                        <option value="ru">Русский</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="studio-header">
+        <div class="container">
+            <h1 class="studio-name" data-ru="Заказы" data-en="Orders">Заказы</h1>
+            <p class="reason-text" style="max-width: 900px; margin: 0 auto;"
+               data-ru="Здесь вы можете узнать, как заказать разработку вашего проекта, ознакомиться с нашими гарантиями и этапами работы."
+               data-en="Here you can find out how to order the development of your project, get acquainted with our guarantees and work stages.">
+                Здесь вы можете узнать, как заказать разработку вашего проекта, ознакомиться с нашими гарантиями и этапами работы.
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="reasons-grid">
+
+            <div class="reason-item">
+                <video class="reason-video" autoplay muted loop playsinline>
+                    <source src="image/oforderDuck.mp4" type="video/mp4">
+                </video>
+                <div class="reason-title" data-ru="Как сделать заказ" data-en="How to place an order">Как сделать заказ</div>
+                <div class="reason-text" data-ru="1. Через бота @OrderPaTBot" data-en="1. Via @OrderPaTBot bot">1. Через бота @OrderPaTBot</div>
+                <ul class="reason-list">
+                    <li data-ru="Тип проекта" data-en="Project type">Тип проекта</li>
+                    <li data-ru="Цели и задачи" data-en="Goals and objectives">Цели и задачи</li>
+                    <li data-ru="Желаемые сроки" data-en="Desired deadlines">Желаемые сроки</li>
+                    <li data-ru="Примерный бюджет" data-en="Approximate budget">Примерный бюджет</li>
+                </ul>
+            </div>
+
+            <div class="reason-item">
+                <video class="reason-video" autoplay muted loop playsinline>
+                    <source src="image/POlorderDuck.mp4" type="video/mp4">
+                </video>
+                <div class="reason-title" data-ru="Наши гарантии" data-en="Our guarantees">Наши гарантии</div>
+                <ul class="reason-list">
+                    <li data-ru="14 дней бесплатных правок" data-en="14 days of free edits">14 дней бесплатных правок</li>
+                    <li data-ru="Полная техническая документация" data-en="Full technical documentation">Полная техническая документация</li>
+                    <li data-ru="Обучение работе с системой" data-en="System usage training">Обучение работе с системой</li>
+                    <li data-ru="Техподдержка 3 месяца бесплатно" data-en="3 months free tech support">Техподдержка 3 месяца бесплатно</li>
+                </ul>
+            </div>
+
+            <div class="reason-item">
+                <video class="reason-video" autoplay muted loop playsinline>
+                    <source src="image/chtopolucDuck.mp4" type="video/mp4">
+                </video>
+                <div class="reason-title" data-ru="Что вы получаете" data-en="What you get">Что вы получаете</div>
+                <ul class="reason-list">
+                    <li data-ru="Исходный код проекта" data-en="Project source code">Исходный код проекта</li>
+                    <li data-ru="Все необходимые инструкции" data-en="All necessary instructions">Все необходимые инструкции</li>
+                    <li data-ru="Готовый к запуску продукт" data-en="Ready-to-launch product">Готовый к запуску продукт</li>
+                    <li data-ru="Гарантию качества от PAT-STUDIO" data-en="Quality guarantee from PAT-STUDIO">Гарантию качества от PAT-STUDIO</li>
+                </ul>
+            </div>
+
+            <div class="reason-item">
+                <video class="reason-video" autoplay muted loop playsinline>
+                    <source src="image/contactDuck.mp4" type="video/mp4">
+                </video>
+                <div class="reason-title" data-ru="Связь с нами" data-en="Contact us">Связь с нами</div>
+                <ul class="reason-list">
+                    <li data-ru="Бот заказов: @OrderPaTBot" data-en="Order bot: @OrderPaTBot">Бот заказов: @OrderPaTBot</li>
+                    <li data-ru="Основатель: @PaTaTyuchik" data-en="Founder: @PaTaTyuchik">Основатель: @PaTaTyuchik</li>
+                    <li data-ru="Ответ в течение 1-2 часов" data-en="Response within 1-2 hours">Ответ в течение 1-2 часов</li>
+                    <li data-ru="Работаем по всему миру" data-en="Working worldwide">Работаем по всему миру</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="approach-box">
+            <h2 class="reason-title" data-ru="Важные вопросы" data-en="Important questions">Важные вопросы</h2>
+            <p class="reason-text" data-ru="Мы ценим каждого клиента и гарантируем индивидуальный подход к вашему проекту."
+               data-en="We value every customer and guarantee an individual approach to your project.">
+                Мы ценим каждого клиента и гарантируем индивидуальный подход к вашему проекту.
+            </p>
+            <p class="reason-text" style="margin-top: 15px;"
+               data-ru="Оплата производится в зависимости от услуги/проекта может быть до или после."
+               data-en="Payment is made depending on the service/project and can be before or after.">
+                Оплата производится в зависимости от услуги/проекта может быть до или после.
+            </p>
+            <p class="reason-text" style="margin-top: 15px;"
+               data-ru="Обращайтесь — мы всегда рады обсудить ваши идеи и превратить их в реальность!"
+               data-en="Contact us — we are always happy to discuss your ideas and turn them into reality!">
+                Обращайтесь — мы всегда рады обсудить ваши идеи и превратить их в реальность!
+            </p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="container">
+            <div class="footer-logo">PAT-STUDIO</div>
+            <p class="reason-text" data-ru="PAT-STUDIO это компания по разработке IT функциональности" data-en="PAT-STUDIO is a company for developing IT functionality">
+                PAT-STUDIO это компания по разработке IT функциональности
+            </p>
+            <div class="footer-copyright" data-ru="© 2026 PAT-STUDIO. Все права защищены." data-en="© 2026 PAT-STUDIO. All rights reserved.">
+                © 2026 PAT-STUDIO. Все права защищены.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme(isDark) {
+            const body = document.body;
+            const themeSwitch = document.getElementById('themeSwitch');
+            if (isDark) {
+                body.classList.add('dark-theme');
+                themeSwitch.checked = true;
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.classList.remove('dark-theme');
+                themeSwitch.checked = false;
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        function changeLanguage(lang) {
+            const languageSelect = document.getElementById('languageSelect');
+            languageSelect.value = lang;
+            document.documentElement.lang = lang;
+
+            if (lang === 'ru') {
+                document.title = 'Заказы | PAT-STUDIO';
+            } else {
+                document.title = 'Orders | PAT-STUDIO';
+            }
+
+            const elements = document.querySelectorAll('[data-ru][data-en]');
+            elements.forEach(function(el) {
+                const text = el.getAttribute('data-' + lang);
+                el.textContent = text;
+            });
+            localStorage.setItem('language', lang);
+        }
+
+        function handleScroll() {
+            const items = document.querySelectorAll('.reason-item, .approach-box');
+            items.forEach(function(item) {
+                const rect = item.getBoundingClientRect();
+                const windowHeight = window.innerHeight;
+                if (rect.top < windowHeight - 30) {
+                    item.classList.add('visible');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            toggleTheme(savedTheme === 'dark');
+
+            const savedLang = localStorage.getItem('language') || 'ru';
+            changeLanguage(savedLang);
+
+            document.getElementById('themeSwitch').addEventListener('change', function() {
+                toggleTheme(this.checked);
+            });
+
+            document.getElementById('languageSelect').addEventListener('change', function() {
+                changeLanguage(this.value);
+            });
+
+            window.addEventListener('scroll', handleScroll);
+            handleScroll();
+        });
+    </script>
+</body>
+</html>
