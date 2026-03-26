@@ -9,6 +9,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent; /* Убирает синюю обводку на смартфонах */
         }
 
         body {
@@ -66,7 +67,7 @@
             color: #333;
             font-size: 18px;
             padding: 10px 5px;
-            transition: color 0.3s ease;
+            transition: color 0.3s;
         }
 
         body.dark-theme .menu-item a {
@@ -96,7 +97,7 @@
         .toggle-container {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .toggle-label {
@@ -124,24 +125,19 @@
         .toggle-slider {
             position: absolute;
             cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             background-color: #ccc;
-            transition: 0.4s;
+            transition: .4s;
             border-radius: 34px;
         }
 
         .toggle-slider:before {
             position: absolute;
             content: "";
-            height: 18px;
-            width: 18px;
-            left: 4px;
-            bottom: 4px;
+            height: 18px; width: 18px;
+            left: 4px; bottom: 4px;
             background-color: white;
-            transition: 0.4s;
+            transition: .4s;
             border-radius: 50%;
         }
 
@@ -165,39 +161,46 @@
 
         body.dark-theme .lang-select {
             background: #2d2d2d;
+            color: #0088cc;
         }
 
         .studio-header {
             text-align: center;
-            padding: 80px 0 40px;
+            padding: 60px 0 40px;
+            background: linear-gradient(to bottom, #f8f9fa, white);
+        }
+
+        body.dark-theme .studio-header {
+            background: linear-gradient(to bottom, #1e1e1e, #121212);
         }
 
         .studio-name {
             font-size: 48px;
             color: #0088cc;
             font-weight: bold;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+        }
+
+        .main-title {
+            text-align: center;
+            font-size: 36px;
+            margin: 40px 0;
+            color: #0088cc;
         }
 
         .reasons-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 40px;
-            margin-top: 40px;
+            margin-bottom: 60px;
         }
 
         .reason-item {
-            background: rgba(0, 136, 204, 0.05);
-            padding: 30px;
-            border-radius: 20px;
             text-align: center;
+            padding: 20px;
             opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.6s ease-out;
-        }
-
-        body.dark-theme .reason-item {
-            background: rgba(0, 136, 204, 0.1);
+            transform: translateY(60px);
+            transition: opacity 0.25s ease-out, transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         .reason-item.visible {
@@ -206,23 +209,25 @@
         }
 
         .reason-video {
-            width: 180px;
-            height: 180px;
+            width: 200px;
+            height: 200px;
             object-fit: cover;
-            border-radius: 15px;
-            margin-bottom: 20px;
+            margin: 0 auto 15px;
+            border-radius: 8px;
+            display: block;
         }
 
         .reason-title {
-            font-size: 24px;
+            font-size: 22px;
             color: #0088cc;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             font-weight: bold;
         }
 
         .reason-text {
             font-size: 16px;
             color: #666;
+            text-align: center;
         }
 
         body.dark-theme .reason-text {
@@ -231,15 +236,16 @@
 
         .reason-list {
             list-style: none;
-            margin-top: 20px;
-            text-align: left;
+            margin-top: 15px;
             display: inline-block;
+            text-align: left;
         }
 
         .reason-list li {
             position: relative;
-            padding-left: 25px;
-            margin-bottom: 10px;
+            padding-left: 20px;
+            margin-bottom: 8px;
+            font-size: 16px;
         }
 
         .reason-list li::before {
@@ -251,11 +257,12 @@
         }
 
         .approach-box {
-            margin: 80px 0;
+            padding: 40px 0;
+            margin: 40px 0 60px;
             text-align: center;
             opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.6s ease-out;
+            transform: translateY(50px);
+            transition: all 0.3s ease-out;
         }
 
         .approach-box.visible {
@@ -264,17 +271,20 @@
         }
 
         .footer {
-            padding: 60px 0;
+            background: #f8f9fa;
+            padding: 40px 0;
             text-align: center;
             border-top: 1px solid #eee;
+            margin-top: 60px;
         }
 
         body.dark-theme .footer {
+            background: #1a1a1a;
             border-top: 1px solid #333;
         }
 
-        .footer-logo {
-            font-size: 20px;
+        .footer-text {
+            font-size: 18px;
             font-weight: bold;
             color: #0088cc;
             margin-bottom: 10px;
@@ -286,25 +296,11 @@
             margin-top: 20px;
         }
 
-        @media (max-width: 1024px) {
-            .reasons-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
         @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 20px;
-            }
-            .menu {
-                gap: 20px;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            .studio-name {
-                font-size: 32px;
-            }
+            .header-content { flex-direction: column; gap: 20px; }
+            .reasons-grid { grid-template-columns: 1fr; }
+            .menu { flex-wrap: wrap; justify-content: center; gap: 20px; }
+            .studio-name { font-size: 32px; }
         }
     </style>
 </head>
@@ -339,7 +335,7 @@
     <div class="studio-header">
         <div class="container">
             <h1 class="studio-name" data-ru="О нашей студии" data-en="About our studio">О нашей студии</h1>
-            <p class="reason-text" style="max-width: 800px; margin: 0 auto;"
+            <p class="reason-text" style="max-width: 900px; margin: 0 auto;"
                data-ru="PAT-STUDIO — это команда профессионалов, которая занимается разработкой IT-решений любой сложности."
                data-en="PAT-STUDIO is a team of professionals specializing in IT solutions of any complexity.">
                <strong>PAT-STUDIO</strong> — это команда профессионалов, которая занимается разработкой IT-решений любой сложности.
@@ -351,48 +347,57 @@
         <div class="reasons-grid">
             <div class="reason-item">
                 <video class="reason-video" autoplay muted loop playsinline><source src="image/GameDuck.mp4" type="video/mp4"></video>
-                <div class="reason-title" data-ru="Игры" data-en="Games">Игры</div>
+                <div class="reason-title" data-ru="Игры и игровые проекты" data-en="Games and game projects">Игры и игровые проекты</div>
                 <ul class="reason-list">
-                    <li data-ru="Roblox, Unity, Blender" data-en="Roblox, Unity, Blender">Roblox, Unity, Blender</li>
-                    <li data-ru="2D/3D графика" data-en="2D/3D graphics">2D/3D графика</li>
+                    <li data-ru="Разработка игр на Roblox, Unity, Blender" data-en="Game development on Roblox, Unity, Blender">Разработка игр на Roblox, Unity, Blender</li>
+                    <li data-ru="2D/3D графика и анимация" data-en="2D/3D graphics and animation">2D/3D графика и анимация</li>
+                    <li data-ru="Игровая логика и скриптинг" data-en="Game logic and scripting">Игровая логика и скриптинг</li>
                 </ul>
             </div>
+
             <div class="reason-item">
                 <video class="reason-video" autoplay muted loop playsinline><source src="image/WebDuck.mp4" type="video/mp4"></video>
                 <div class="reason-title" data-ru="Веб-разработка" data-en="Web development">Веб-разработка</div>
                 <ul class="reason-list">
-                    <li data-ru="Сайты и порталы" data-en="Websites and portals">Сайты и порталы</li>
-                    <li data-ru="Frontend / Backend" data-en="Frontend / Backend">Frontend / Backend</li>
+                    <li data-ru="Сайты-визитки и порталы" data-en="Business card websites and portals">Сайты-визитки и порталы</li>
+                    <li data-ru="Интернет-магазины" data-en="Online stores">Интернет-магазины</li>
+                    <li data-ru="Frontend и Backend разработка" data-en="Frontend and Backend development">Frontend и Backend разработка</li>
                 </ul>
             </div>
+
             <div class="reason-item">
                 <video class="reason-video" autoplay muted loop playsinline><source src="image/BotDuck.mp4" type="video/mp4"></video>
-                <div class="reason-title" data-ru="Боты" data-en="Bots">Боты</div>
+                <div class="reason-title" data-ru="Автоматизация и боты" data-en="Automation and bots">Автоматизация и боты</div>
                 <ul class="reason-list">
-                    <li data-ru="Telegram AI боты" data-en="Telegram AI bots">Telegram AI боты</li>
-                    <li data-ru="Автоматизация" data-en="Automation">Автоматизация</li>
+                    <li data-ru="Telegram-боты с AI" data-en="Telegram bots with AI">Telegram-боты с AI</li>
+                    <li data-ru="Парсинг данных и аналитика" data-en="Data parsing and analytics">Парсинг данных и аналитика</li>
+                    <li data-ru="Автоматизация бизнес-процессов" data-en="Business process automation">Автоматизация бизнес-процессов</li>
                 </ul>
             </div>
+
             <div class="reason-item">
                 <video class="reason-video" autoplay muted loop playsinline><source src="image/OtherDuck.mp4" type="video/mp4"></video>
-                <div class="reason-title" data-ru="Другое" data-en="Other">Другое</div>
+                <div class="reason-title" data-ru="И многое другое" data-en="And much more">И многое другое</div>
                 <ul class="reason-list">
-                    <li data-ru="Продажа систем" data-en="Systems sale">Продажа систем</li>
-                    <li data-ru="Обучение" data-en="Training">Обучение</li>
+                    <li data-ru="Продажа созданных систем" data-en="Sale of created systems">Продажа созданных систем</li>
+                    <li data-ru="Продажа библиотек и игр" data-en="Sale of libraries and games">Продажа библиотек и игр</li>
+                    <li data-ru="Индивидуальное обучение" data-en="Individual training">Индивидуальное обучение</li>
                 </ul>
             </div>
         </div>
 
         <div class="approach-box">
-            <h2 class="reason-title" data-ru="Наш подход" data-en="Our approach">Наш подход</h2>
-            <p class="reason-text" data-ru="Мы работаем по полному циклу разработки." data-en="We work on a full development cycle.">Мы работаем по полному циклу разработки.</p>
+            <h2 class="reason-title" data-ru="Наш подход к работе" data-en="Our approach">Наш подход к работе</h2>
+            <p class="reason-text" data-ru="Мы работаем по полному циклу: от анализа задачи до поддержки проекта." data-en="We work on a full cycle: from task analysis to project support.">
+                Мы работаем по полному циклу: от анализа задачи до поддержки проекта.
+            </p>
         </div>
     </div>
 
     <div class="footer">
         <div class="container">
-            <div class="footer-logo">PAT-STUDIO</div>
-            <div class="footer-copyright" data-ru="© 2026 PAT-STUDIO" data-en="© 2026 PAT-STUDIO">© 2026 PAT-STUDIO</div>
+            <div class="footer-text">PAT-STUDIO</div>
+            <div class="footer-copyright" data-ru="© 2026 PAT-STUDIO. Все права защищены." data-en="© 2026 PAT-STUDIO. All rights reserved.">© 2026 PAT-STUDIO. Все права защищены.</div>
         </div>
     </div>
 
@@ -408,14 +413,20 @@
             document.documentElement.lang = lang;
             document.title = lang === 'ru' ? 'Информация | PAT-STUDIO' : 'Information | PAT-STUDIO';
             document.querySelectorAll('[data-ru][data-en]').forEach(el => {
-                el.textContent = el.getAttribute(`data-${lang}`);
+                const text = el.getAttribute('data-' + lang);
+                if (el.querySelector('strong')) {
+                    el.innerHTML = '<strong>PAT-STUDIO</strong>' + text.split('PAT-STUDIO')[1];
+                } else {
+                    el.textContent = text;
+                }
             });
             localStorage.setItem('language', lang);
         }
 
         function handleScroll() {
             document.querySelectorAll('.reason-item, .approach-box').forEach(item => {
-                if (item.getBoundingClientRect().top < window.innerHeight - 50) {
+                const rect = item.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 30) {
                     item.classList.add('visible');
                 }
             });
