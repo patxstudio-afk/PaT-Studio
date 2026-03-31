@@ -2,7 +2,8 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Page not found | PAT-STUDIO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Информация | PAT-STUDIO</title>
     <style>
         * {
             margin: 0;
@@ -12,149 +13,499 @@
 
         body {
             font-family: Arial, sans-serif;
-            background: white;
+            background-color: white;
             color: black;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 20px;
-            transition: all 0.3s ease;
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            overflow-x: hidden;
         }
 
         body.dark-theme {
-            background: #121212;
+            background-color: #121212;
             color: #e0e0e0;
         }
 
-        .video-container {
-            width: 300px;
-            height: 300px;
-            margin: 0 auto 30px;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
 
-        .video-container video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 10px;
+        .header {
+            background-color: white;
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
-        .error-title {
-            font-size: 32px;
+        body.dark-theme .header {
+            background-color: #1a1a1a;
+            border-bottom: 1px solid #333;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+
+        .menu-item {
+            position: relative;
+        }
+
+        .menu-item a {
+            text-decoration: none;
+            color: #333;
+            font-size: 18px;
+            padding: 10px 5px;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-theme .menu-item a {
+            color: #e0e0e0;
+        }
+
+        .menu-item.active a {
             color: #0088cc;
-            margin-bottom: 20px;
+        }
+
+        .menu-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: #0088cc;
+        }
+
+        .controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toggle-label {
+            font-size: 14px;
+            color: #666;
+            font-weight: normal;
+        }
+
+        body.dark-theme .toggle-label {
+            color: #aaa;
+        }
+
+        .theme-toggle {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .theme-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: #0088cc;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        .lang-select {
+            padding: 6px 12px;
+            border: 1px solid #0088cc;
+            background-color: white;
+            color: #0088cc;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-theme .lang-select {
+            background-color: #2d2d2d;
+            color: #0088cc;
+        }
+
+        .studio-header {
+            text-align: center;
+            padding: 60px 0 40px;
+            background: linear-gradient(to bottom, #f8f9fa, white);
+        }
+
+        body.dark-theme .studio-header {
+            background: linear-gradient(to bottom, #1e1e1e, #121212);
+        }
+
+        .studio-name {
+            font-size: 48px;
+            color: #0088cc;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .reasons-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .reason-item {
+            text-align: center;
+            padding: 20px;
+            opacity: 0;
+            transform: translateY(60px);
+            transition: opacity 0.25s ease-out, transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .reason-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reason-item:hover {
+            transform: translateY(-5px) scale(1.02);
+            transition: transform 0.3s ease;
+        }
+
+        .reason-video {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            margin: 0 auto 15px;
+            border-radius: 8px;
+            display: block;
+        }
+
+        .reason-title {
+            font-size: 22px;
+            color: #0088cc;
+            margin-bottom: 10px;
             font-weight: bold;
         }
 
-        .error-text {
-            font-size: 18px;
-            color: #0088cc;
-            margin-bottom: 30px;
-            max-width: 600px;
+        .reason-text {
+            font-size: 16px;
+            color: #666;
             line-height: 1.6;
         }
 
-        body.dark-theme .error-text {
-            color: #66b3ff;
+        body.dark-theme .reason-text {
+            color: #aaa;
         }
 
-        .home-link {
+        .reason-list {
+            list-style: none;
+            margin-top: 15px;
             display: inline-block;
-            padding: 12px 30px;
-            background: #0088cc;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 16px;
-            transition: background 0.3s;
+            text-align: left;
         }
 
-        .home-link:hover {
-            background: #006699;
+        .reason-list li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 8px;
+        }
+
+        .reason-list li::before {
+            content: "•";
+            color: #0088cc;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        .approach-box {
+            padding: 40px 0;
+            margin-top: 40px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+
+        .approach-box.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .footer {
+            background-color: #f8f9fa;
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid #eee;
+            margin-top: 60px;
+        }
+
+        body.dark-theme .footer {
+            background-color: #1a1a1a;
+            border-top: 1px solid #333;
+        }
+
+        .footer-logo {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0088cc;
+            margin-bottom: 10px;
+        }
+
+        .footer-copyright {
+            font-size: 14px;
+            color: #888;
+            margin-top: 20px;
         }
 
         @media (max-width: 768px) {
-            .video-container {
-                width: 250px;
-                height: 250px;
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
             }
-
-            .error-title {
-                font-size: 24px;
+            .reasons-grid {
+                grid-template-columns: 1fr;
             }
-
-            .error-text {
-                font-size: 16px;
-                padding: 0 15px;
+            .menu {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 20px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="video-container">
-        <video autoplay muted loop playsinline>
-            <source src="../image/DontKnowDUCK.mp4" type="video/mp4">
-        </video>
+
+    <div class="header">
+        <div class="container">
+            <div class="header-content">
+                <ul class="menu">
+                    <li class="menu-item">
+                        <a href="index.html" data-ru="главная" data-en="home">главная</a>
+                    </li>
+                    <li class="menu-item active">
+                        <a href="about.html" data-ru="информация" data-en="about">информация</a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="orders.html" data-ru="заказы" data-en="orders">заказы</a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="chat.html" data-ru="чат" data-en="chat">чат</a>
+                    </li>
+                </ul>
+                <div class="controls">
+                    <div class="toggle-container">
+                        <span class="toggle-label" data-ru="Тема" data-en="Theme">Тема</span>
+                        <label class="theme-toggle">
+                            <input type="checkbox" id="themeSwitch">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <select class="lang-select" id="languageSelect">
+                        <option value="ru">Русский</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <h1 class="error-title" data-ru="404 - Страница не найдена" data-en="404 - Page not found">404 - Страница не найдена</h1>
+    <div class="studio-header">
+        <div class="container">
+            <h1 class="studio-name" data-ru="О нашей студии" data-en="About our studio">О нашей студии</h1>
+            <p class="reason-text" style="max-width: 900px; margin: 0 auto;"
+               data-ru="PAT-STUDIO — это команда профессионалов, которая занимается разработкой IT-решений любой сложности. Мы создаем продукты, которые решают реальные задачи бизнеса и пользователей."
+               data-en="PAT-STUDIO is a team of professionals specializing in IT solutions of any complexity. We create products that solve real business and user problems.">
+                <strong>PAT-STUDIO</strong> — это команда профессионалов, которая занимается разработкой IT-решений любой сложности. Мы создаем продукты, которые решают реальные задачи бизнеса и пользователей.
+            </p>
+        </div>
+    </div>
 
-    <p class="error-text" data-ru="К сожалению, запрашиваемая страница не существует или была перемещена.<br>Возможно, вы ошиблись в адресе или страница была удалена."
-       data-en="Unfortunately, the requested page does not exist or has been moved.<br>You may have entered the wrong address or the page has been deleted.">
-        К сожалению, запрашиваемая страница не существует или была перемещена.<br>
-        Возможно, вы ошиблись в адресе или страница была удалена.
-    </p>
+    <div class="container">
+        <div class="reasons-grid">
 
-    <a href="/" class="home-link" data-ru="Вернуться на главную" data-en="Return to homepage">Вернуться на главную</a>
+            <div class="reason-item">
+                <video class="reason-video" autoplay muted loop playsinline>
+                    <source src="image/GameDuck.mp4" type="video/mp4">
+                </video>
+                <div class="reason-title" data-ru="Игры и игровые проекты" data-en="Games and game projects">Игры и игровые проекты</div>
+                <ul class="reason-list">
+                    <li data-ru="Разработка игр на Roblox, Unity, Blender и другом" data-en="Game development on Roblox, Unity, Blender and others">Разработка игр на Roblox, Unity, Blender и другом</li>
+                    <li data-ru="2D/3D графика и анимация" data-en="2D/3D graphics and animation">2D/3D графика и анимация</li>
+                    <li data-ru="Игровая логика и скриптинг" data-en="Game logic and scripting">Игровая логика и скриптинг</li>
+                    <li data-ru="Порты на мобильные платформы" data-en="Ports to mobile platforms">Порты на мобильные платформы</li>
+                    <li data-ru="Мультиплеер и сетевая интеграция" data-en="Multiplayer and network integration">Мультиплеер и сетевая интеграция</li>
+                </ul>
+            </div>
+
+            <div class="reason-item">
+                <video class="reason-video" autoplay muted loop playsinline>
+                    <source src="image/WebDuck.mp4" type="video/mp4">
+                </video>
+                <div class="reason-title" data-ru="Веб-разработка" data-en="Web development">Веб-разработка</div>
+                <ul class="reason-list">
+                    <li data-ru="Сайты-визитки и корпоративные порталы" data-en="Business card websites and corporate portals">Сайты-визитки и корпоративные порталы</li>
+                    <li data-ru="Интернет-магазины и маркетплейсы" data-en="Online stores and marketplaces">Интернет-магазины и маркетплейсы</li>
+                    <li data-ru="Веб-приложения любой сложности" data-en="Web applications of any complexity">Веб-приложения любой сложности</li>
+                    <li data-ru="Frontend и Backend разработка" data-en="Frontend and Backend development">Frontend и Backend разработка</li>
+                    <li data-ru="API интеграции и микросервисы" data-en="API integrations and microservices">API интеграции и микросервисы</li>
+                </ul>
+            </div>
+
+            <div class="reason-item">
+                <video class="reason-video" autoplay muted loop playsinline>
+                    <source src="image/BotDuck.mp4" type="video/mp4">
+                </video>
+                <div class="reason-title" data-ru="Автоматизация и боты" data-en="Automation and bots">Автоматизация и боты</div>
+                <ul class="reason-list">
+                    <li data-ru="Telegram-боты с AI функционалом" data-en="Telegram bots with AI functionality">Telegram-боты с AI функционалом</li>
+                    <li data-ru="Парсинг данных и аналитика" data-en="Data parsing and analytics">Парсинг данных и аналитика</li>
+                    <li data-ru="Чат-боты для поддержки и продаж" data-en="Chatbots for support and sales">Чат-боты для поддержки и продаж</li>
+                    <li data-ru="Автоматизация бизнес-процессов" data-en="Business process automation">Автоматизация бизнес-процессов</li>
+                    <li data-ru="Интеграция с внешними API" data-en="Integration with external APIs">Интеграция с внешними API</li>
+                </ul>
+            </div>
+
+            <div class="reason-item">
+                <video class="reason-video" autoplay muted loop playsinline>
+                    <source src="image/OtherDuck.mp4" type="video/mp4">
+                </video>
+                <div class="reason-title" data-ru="И многое другое" data-en="And much more">И многое другое</div>
+                <ul class="reason-list">
+                    <li data-ru="Продажа созданных систем" data-en="Sale of created systems">Продажа созданных систем</li>
+                    <li data-ru="Продажа библиотек" data-en="Sale of libraries">Продажа библиотек</li>
+                    <li data-ru="Продажа игр" data-en="Sale of games">Продажа игр</li>
+                    <li data-ru="Продажа искусственного интеллекта на аккаунт" data-en="Sale of AI for accounts">Продажа искусственного интеллекта на аккаунт</li>
+                    <li data-ru="Индивидуальное обучение разработке" data-en="Individual development training">Индивидуальное обучение разработке</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="approach-box">
+            <h2 class="reason-title" data-ru="Наш подход к работе" data-en="Our approach">Наш подход к работе</h2>
+            <p class="reason-text" data-ru="Мы работаем по полному циклу: от анализа задачи и проектирования до разработки, тестирования, запуска и поддержки проекта."
+               data-en="We work on a full cycle: from task analysis and design to development, testing, launch and project support.">
+                Мы работаем по полному циклу: от анализа задачи и проектирования до разработки, тестирования, запуска и поддержки проекта.
+            </p>
+            <p class="reason-text" style="margin-top: 15px;"
+               data-ru="Каждый проект проходит через строгий контроль качества, мы предоставляем полную техническую документацию и гарантируем работоспособность решения."
+               data-en="Each project goes through strict quality control, we provide full technical documentation and guarantee the solution's functionality.">
+                Каждый проект проходит через строгий контроль качества, мы предоставляем полную техническую документацию и гарантируем работоспособность решения.
+            </p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="container">
+            <div class="footer-logo">PAT-STUDIO</div>
+            <p class="reason-text" data-ru="PAT-STUDIO это компания по разработке IT функциональности" data-en="PAT-STUDIO is an IT development company">
+                PAT-STUDIO это компания по разработке IT функциональности
+            </p>
+            <div class="footer-copyright" data-ru="© 2026 PAT-STUDIO. Все права защищены." data-en="© 2026 PAT-STUDIO. All rights reserved.">
+                © 2026 PAT-STUDIO. Все права защищены.
+            </div>
+        </div>
+    </div>
 
     <script>
         function toggleTheme(isDark) {
             const body = document.body;
-
+            const themeSwitch = document.getElementById('themeSwitch');
             if (isDark) {
                 body.classList.add('dark-theme');
+                themeSwitch.checked = true;
                 localStorage.setItem('theme', 'dark');
             } else {
                 body.classList.remove('dark-theme');
+                themeSwitch.checked = false;
                 localStorage.setItem('theme', 'light');
             }
         }
 
         function changeLanguage(lang) {
+            const languageSelect = document.getElementById('languageSelect');
+            languageSelect.value = lang;
             document.documentElement.lang = lang;
+            document.title = (lang === 'ru') ? 'Информация | PAT-STUDIO' : 'Information | PAT-STUDIO';
 
-            if (lang === 'ru') {
-                document.title = 'Страница не найдена | PAT-STUDIO';
-            } else {
-                document.title = 'Page not found | PAT-STUDIO';
-            }
-
-            document.querySelectorAll('[data-ru][data-en]').forEach(element => {
-                element.textContent = element.getAttribute(`data-${lang}`);
+            const elements = document.querySelectorAll('[data-ru][data-en]');
+            elements.forEach(function(el) {
+                const text = el.getAttribute('data-' + lang);
+                if (el.querySelector('strong')) {
+                    const parts = text.split('PAT-STUDIO');
+                    el.innerHTML = '<strong>PAT-STUDIO</strong>' + (parts[1] || text);
+                } else {
+                    el.textContent = text;
+                }
             });
-
             localStorage.setItem('language', lang);
         }
 
-        function loadSettings() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            if (savedTheme === 'dark') {
-                toggleTheme(true);
-            } else {
-                toggleTheme(false);
-            }
-
-            const savedLang = localStorage.getItem('language') || 'ru';
-            changeLanguage(savedLang);
+        function handleScroll() {
+            const items = document.querySelectorAll('.reason-item, .approach-box');
+            items.forEach(function(item) {
+                const rect = item.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 30) {
+                    item.classList.add('visible');
+                }
+            });
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            document.querySelector('video').play().catch(e => console.log("Видео автовоспроизведение:", e));
-
-            loadSettings();
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            toggleTheme(savedTheme === 'dark');
+            const savedLang = localStorage.getItem('language') || 'ru';
+            changeLanguage(savedLang);
+            document.getElementById('themeSwitch').addEventListener('change', function() {
+                toggleTheme(this.checked);
+            });
+            document.getElementById('languageSelect').addEventListener('change', function() {
+                changeLanguage(this.value);
+            });
+            window.addEventListener('scroll', handleScroll);
+            handleScroll();
         });
     </script>
 </body>
