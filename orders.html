@@ -68,8 +68,6 @@
             font-size: 18px;
             padding: 10px 5px;
             transition: color 0.3s;
-            outline: none;
-            border: none;
             -webkit-user-select: none;
             user-select: none;
         }
@@ -127,19 +125,24 @@
         .toggle-slider {
             position: absolute;
             cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background-color: #ccc;
             transition: .4s;
             border-radius: 34px;
-            outline: none;
-            border: none;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         .toggle-slider:before {
             position: absolute;
             content: "";
-            height: 18px; width: 18px;
-            left: 4px; bottom: 4px;
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
             background-color: white;
             transition: .4s;
             border-radius: 50%;
@@ -162,7 +165,8 @@
             cursor: pointer;
             font-size: 14px;
             transition: all 0.3s;
-            outline: none;
+            -webkit-user-select: none;
+            user-select: none;
             -webkit-appearance: none;
             appearance: none;
         }
@@ -187,14 +191,8 @@
             color: #0088cc;
             font-weight: bold;
             margin-bottom: 10px;
-            transition: transform 0.3s ease;
-            display: inline-block;
             -webkit-user-select: none;
             user-select: none;
-        }
-
-        .studio-name:hover {
-            transform: scale(1.05);
         }
 
         .studio-tagline {
@@ -230,9 +228,8 @@
             opacity: 0;
             transform: translateY(60px);
             transition: opacity 0.25s ease-out, transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            cursor: pointer;
-            outline: none;
-            border: none;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         .reason-item.visible {
@@ -252,6 +249,9 @@
             border-radius: 8px;
             display: block;
             transition: box-shadow 0.3s ease;
+            -webkit-user-select: none;
+            user-select: none;
+            pointer-events: none;
         }
 
         .reason-title {
@@ -267,6 +267,8 @@
             font-size: 16px;
             color: #666;
             text-align: center;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         body.dark-theme .reason-text {
@@ -284,11 +286,8 @@
             position: relative;
             padding-left: 20px;
             margin-bottom: 8px;
-            color: #666;
-        }
-
-        body.dark-theme .reason-list li {
-            color: #aaa;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         .reason-list li::before {
@@ -340,6 +339,8 @@
             color: #666;
             max-width: 800px;
             margin: 0 auto 20px;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         body.dark-theme .footer-description {
@@ -354,45 +355,63 @@
         }
 
         @media (max-width: 768px) {
-            .header-content { 
-                flex-direction: column; 
-                gap: 20px; 
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
             }
+
             .menu {
                 flex-wrap: wrap;
                 justify-content: center;
                 gap: 20px;
             }
-            .reasons-grid { 
-                grid-template-columns: 1fr; 
+
+            .reasons-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
             }
+
             .studio-name {
                 font-size: 36px;
             }
+
+            .studio-tagline {
+                font-size: 18px;
+            }
+
             .main-title {
                 font-size: 28px;
+            }
+
+            .reason-item {
+                padding: 15px;
+            }
+
+            .reason-video {
+                width: 150px;
+                height: 150px;
+                margin: 0 auto 10px;
+            }
+
+            .reason-title {
+                font-size: 18px;
+            }
+
+            .reason-text {
+                font-size: 14px;
             }
         }
     </style>
 </head>
 <body>
-
     <div class="header">
         <div class="container">
             <div class="header-content">
                 <ul class="menu">
-                    <li class="menu-item">
-                        <a href="index.html" data-ru="главная" data-en="home">главная</a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="about.html" data-ru="информация" data-en="about">информация</a>
-                    </li>
-                    <li class="menu-item active">
-                        <a href="orders.html" data-ru="заказы" data-en="orders">заказы</a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="chat.html" data-ru="чат" data-en="chat">чат</a>
-                    </li>
+                    <li class="menu-item"><a href="index.html" data-ru="главная" data-en="home">главная</a></li>
+                    <li class="menu-item"><a href="about.html" data-ru="информация" data-en="about">информация</a></li>
+                    <li class="menu-item active"><a href="orders.html" data-ru="заказы" data-en="orders">заказы</a></li>
+                    <li class="menu-item"><a href="chat.html" data-ru="чат" data-en="chat">чат</a></li>
                 </ul>
                 <div class="controls">
                     <div class="toggle-container">
@@ -413,53 +432,30 @@
 
     <div class="studio-header">
         <div class="container">
-            <h1 class="studio-name" data-ru="Заказы" data-en="Orders">Заказы</h1>
-            <p class="studio-tagline" data-ru="Как создать заказ и получить готовый результат" data-en="How to create an order and get a ready result">Как создать заказ и получить готовый результат</p>
+            <h1 class="studio-name">PAT-STUDIO</h1>
+            <p class="studio-tagline" data-ru="Заказы" data-en="Orders">Заказы</p>
         </div>
     </div>
 
     <div class="container">
-        <h1 class="main-title" data-ru="Четыре простых шага" data-en="Four simple steps">Четыре простых шага</h1>
+        <h1 class="main-title" data-ru="Как сделать заказ и что вы получаете" data-en="How to place an order and what you get">Как сделать заказ и что вы получаете</h1>
 
         <div class="reasons-grid">
-
             <div class="reason-item">
-                <video class="reason-video" autoplay muted loop playsinline>
-                    <source src="image/oforderDuck.mp4" type="video/mp4">
-                </video>
-                <div class="reason-title" data-ru="Шаг 1: Оформление" data-en="Step 1: Registration">Шаг 1: Оформление</div>
-                <div class="reason-text" data-ru="Напишите боту @OrderPaTBot всю информацию о вашем проекте" data-en="Write all project information to @OrderPaTBot">Напишите боту @OrderPaTBot всю информацию о вашем проекте</div>
+                <video class="reason-video" autoplay muted loop playsinline><source src="image/oforderDuck.mp4" type="video/mp4"></video>
+                <div class="reason-title" data-ru="Как сделать заказ" data-en="How to place an order">Как сделать заказ</div>
+                <div class="reason-text" data-ru="1. Через бота @OrderPaTBot" data-en="1. Via @OrderPaTBot bot">1. Через бота @OrderPaTBot</div>
+                <ul class="reason-list">
+                    <li data-ru="Тип проекта" data-en="Project type">Тип проекта</li>
+                    <li data-ru="Цели и задачи" data-en="Goals and objectives">Цели и задачи</li>
+                    <li data-ru="Желаемые сроки" data-en="Desired deadlines">Желаемые сроки</li>
+                    <li data-ru="Примерный бюджет" data-en="Approximate budget">Примерный бюджет</li>
+                </ul>
             </div>
 
             <div class="reason-item">
-                <video class="reason-video" autoplay muted loop playsinline>
-                    <source src="image/POlorderDuck.mp4" type="video/mp4">
-                </video>
-                <div class="reason-title" data-ru="Шаг 2: Обсуждение" data-en="Step 2: Discussion">Шаг 2: Обсуждение</div>
-                <div class="reason-text" data-ru="Мы обсудим детали, сроки и бюджет вашего заказа" data-en="We will discuss details, timelines and budget">Мы обсудим детали, сроки и бюджет вашего заказа</div>
-            </div>
-
-            <div class="reason-item">
-                <video class="reason-video" autoplay muted loop playsinline>
-                    <source src="image/chtopolucDuck.mp4" type="video/mp4">
-                </video>
-                <div class="reason-title" data-ru="Шаг 3: Разработка" data-en="Step 3: Development">Шаг 3: Разработка</div>
-                <div class="reason-text" data-ru="Наша команда начинает работу над вашим проектом" data-en="Our team starts working on your project">Наша команда начинает работу над вашим проектом</div>
-            </div>
-
-            <div class="reason-item">
-                <video class="reason-video" autoplay muted loop playsinline>
-                    <source src="image/contactDuck.mp4" type="video/mp4">
-                </video>
-                <div class="reason-title" data-ru="Шаг 4: Сдача" data-en="Step 4: Delivery">Шаг 4: Сдача</div>
-                <div class="reason-text" data-ru="Получаете готовый результат с документацией и поддержкой" data-en="Get a ready result with documentation and support">Получаете готовый результат с документацией и поддержкой</div>
-            </div>
-
-        </div>
-
-        <div class="approach-box">
-            <h2 class="reason-title" data-ru="Наши гарантии" data-en="Our guarantees">Наши гарантии</h2>
-            <div class="reason-text">
+                <video class="reason-video" autoplay muted loop playsinline><source src="image/POlorderDuck.mp4" type="video/mp4"></video>
+                <div class="reason-title" data-ru="Наши гарантии" data-en="Our guarantees">Наши гарантии</div>
                 <ul class="reason-list">
                     <li data-ru="14 дней бесплатных правок" data-en="14 days of free edits">14 дней бесплатных правок</li>
                     <li data-ru="Полная техническая документация" data-en="Full technical documentation">Полная техническая документация</li>
@@ -467,6 +463,35 @@
                     <li data-ru="Техподдержка 3 месяца бесплатно" data-en="3 months free tech support">Техподдержка 3 месяца бесплатно</li>
                 </ul>
             </div>
+
+            <div class="reason-item">
+                <video class="reason-video" autoplay muted loop playsinline><source src="image/chtopolucDuck.mp4" type="video/mp4"></video>
+                <div class="reason-title" data-ru="Что вы получаете" data-en="What you get">Что вы получаете</div>
+                <ul class="reason-list">
+                    <li data-ru="Исходный код проекта" data-en="Project source code">Исходный код проекта</li>
+                    <li data-ru="Все необходимые инструкции" data-en="All necessary instructions">Все необходимые инструкции</li>
+                    <li data-ru="Готовый к запуску продукт" data-en="Ready-to-launch product">Готовый к запуску продукт</li>
+                    <li data-ru="Гарантию качества от PAT-STUDIO" data-en="Quality guarantee from PAT-STUDIO">Гарантию качества от PAT-STUDIO</li>
+                </ul>
+            </div>
+
+            <div class="reason-item">
+                <video class="reason-video" autoplay muted loop playsinline><source src="image/contactDuck.mp4" type="video/mp4"></video>
+                <div class="reason-title" data-ru="Связь с нами" data-en="Contact us">Связь с нами</div>
+                <ul class="reason-list">
+                    <li data-ru="Бот заказов: @OrderPaTBot" data-en="Order bot: @OrderPaTBot">Бот заказов: @OrderPaTBot</li>
+                    <li data-ru="Основатель: @PaTaTyuchik" data-en="Founder: @PaTaTyuchik">Основатель: @PaTaTyuchik</li>
+                    <li data-ru="Ответ в течение 1-2 часов" data-en="Response within 1-2 hours">Ответ в течение 1-2 часов</li>
+                    <li data-ru="Работаем по всему миру" data-en="Working worldwide">Работаем по всему миру</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="approach-box">
+            <h2 class="reason-title" data-ru="Важные вопросы" data-en="Important questions">Важные вопросы</h2>
+            <p class="reason-text" data-ru="Мы ценим каждого клиента и гарантируем индивидуальный подход к вашему проекту." data-en="We value every customer and guarantee an individual approach to your project.">Мы ценим каждого клиента и гарантируем индивидуальный подход к вашему проекту.</p>
+            <p class="reason-text" style="margin-top: 15px;" data-ru="Оплата производится в зависимости от услуги/проекта может быть до или после." data-en="Payment is made depending on the service/project and can be before or after.">Оплата производится в зависимости от услуги/проекта может быть до или после.</p>
+            <p class="reason-text" style="margin-top: 15px;" data-ru="Обращайтесь — мы всегда рады обсудить ваши идеи и превратить их в реальность!" data-en="Contact us — we are always happy to discuss your ideas and turn them into reality!">Обращайтесь — мы всегда рады обсудить ваши идеи и превратить их в реальность!</p>
         </div>
     </div>
 
