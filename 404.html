@@ -1,161 +1,302 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Page not found | PAT-STUDIO</title>
+
+    <script>
+        const initTheme = localStorage.getItem('pat_theme') || localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', initTheme);
+    </script>
+
     <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f5f7;
+            --text-primary: #000000;
+            --text-secondary: #6e6e73;
+            --border-color: #e5e5e5;
+            --accent-gold: #d4af37;
+            --font-samsung: "SamsungOne", "Inter", "Helvetica Neue", Arial, sans-serif;
+            --transition-smooth: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+
+        [data-theme="dark"], .dark-theme, body.dark {
+            --bg-primary: #000000 !important;
+            --bg-secondary: #0b0b0c !important;
+            --text-primary: #ffffff !important;
+            --text-secondary: #86868b !important;
+            --border-color: #1a1a1a !important;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            outline: none;
         }
+
 
         body {
-            font-family: Arial, sans-serif;
-            background: white;
-            color: black;
+            font-family: "SamsungOne", "Inter", "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            text-align: center;
-            padding: 20px;
-            transition: all 0.3s ease;
+            padding: 40px 24px;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            -webkit-font-smoothing: antialiased;
+            overflow: hidden;
         }
 
-        body.dark-theme {
-            background: #121212;
-            color: #e0e0e0;
+        body.rtl {
+            direction: rtl;
         }
 
-        .video-container {
-            width: 300px;
-            height: 300px;
-            margin: 0 auto 30px;
-        }
-
-        .video-container video {
+        .error-container {
+            max-width: 900px;
             width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 80px;
+
+            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .number-container {
+            font-size: 180px;
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: -8px;
+            background: linear-gradient(135deg, #000000 30%, var(--accent-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            flex-shrink: 0;
+            user-select: none;
+            transition: var(--transition-smooth);
+        }
+
+        [data-theme="dark"] .number-container,
+        .dark-theme .number-container,
+        body.dark .number-container {
+            background: linear-gradient(135deg, #ffffff 40%, var(--accent-gold)) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            filter: drop-shadow(0 0 35px rgba(212, 175, 55, 0.25)) !important;
+        }
+
+        .content-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+            max-width: 480px;
+        }
+
+        body.rtl .content-container {
+            align-items: flex-end;
+            text-align: right;
         }
 
         .error-title {
-            font-size: 32px;
-            color: #0088cc;
-            margin-bottom: 20px;
-            font-weight: bold;
+            font-size: 42px;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+            color: var(--text-primary);
         }
 
         .error-text {
-            font-size: 18px;
-            color: #0088cc;
-            margin-bottom: 30px;
-            max-width: 600px;
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
             line-height: 1.6;
         }
 
-        body.dark-theme .error-text {
-            color: #66b3ff;
+        .home-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 42px;
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 700;
+            border: 1px solid var(--text-primary);
+            transition: var(--transition-smooth);
+            cursor: pointer;
         }
 
-        .home-link {
-            display: inline-block;
-            padding: 12px 30px;
-            background: #0088cc;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 16px;
-            transition: background 0.3s;
+        [data-theme="dark"] .home-link,
+        .dark-theme .home-link,
+        body.dark .home-link {
+            background: #ffffff !important;
+            color: #000000 !important;
+            border: 1px solid #ffffff !important;
         }
 
         .home-link:hover {
-            background: #006699;
+            transform: translateY(-3px);
+            background: transparent !important;
+            color: var(--text-primary) !important;
+            border-color: var(--accent-gold) !important;
+            box-shadow: 0 12px 30px rgba(212, 175, 55, 0.2);
+        }
+
+        @media (max-width: 900px) {
+            .error-container { gap: 40px; }
+            .number-container { font-size: 140px; letter-spacing: -6px; }
+            .error-title { font-size: 36px; }
         }
 
         @media (max-width: 768px) {
-            .video-container {
-                width: 250px;
-                height: 250px;
+            .error-container {
+                flex-direction: column;
+                gap: 24px;
+                text-align: center;
             }
-
-            .error-title {
-                font-size: 24px;
+            body.rtl .content-container,
+            .content-container {
+                align-items: center;
+                text-align: center;
             }
-
-            .error-text {
-                font-size: 16px;
-                padding: 0 15px;
-            }
+            .number-container { font-size: 120px; letter-spacing: -4px; }
+            .error-title { font-size: 30px; letter-spacing: -0.5px; }
+            .error-text { font-size: 15px; margin-bottom: 32px; padding: 0 10px; }
+            .home-link { width: 100%; max-width: 300px; }
         }
     </style>
 </head>
 <body>
-    <div class="video-container">
-        <video autoplay muted loop playsinline>
-            <source src="../image/DontKnowDUCK.mp4" type="video/mp4">
-        </video>
+
+    <div class="error-container">
+        <div class="number-container">404</div>
+
+        <div class="content-container">
+            <h1 class="error-title" data-key="errorTitle">Страница не найдена</h1>
+            <p class="error-text" data-key="errorDesc">
+                Запрашиваемый адрес недоступен, удален или никогда не существовал на серверах PAT-STUDIO. Возможно, вы перешли по устаревшей ссылке.
+            </p>
+                <a href="/index.html" class="home-link" data-key="btnHome">На главную</a>
+        </div>
     </div>
 
-    <h1 class="error-title" data-ru="404 - Страница не найдена" data-en="404 - Page not found">404 - Страница не найдена</h1>
-
-    <p class="error-text" data-ru="К сожалению, запрашиваемая страница не существует или была перемещена.<br>Возможно, вы ошиблись в адресе или страница была удалена."
-       data-en="Unfortunately, the requested page does not exist or has been moved.<br>You may have entered the wrong address or the page has been deleted.">
-        К сожалению, запрашиваемая страница не существует или была перемещена.<br>
-        Возможно, вы ошиблись в адресе или страница была удалена.
-    </p>
-
-    <a href="/" class="home-link" data-ru="Вернуться на главную" data-en="Return to homepage">Вернуться на главную</a>
-
     <script>
-        function toggleTheme(isDark) {
-            const body = document.body;
+        const ErrorEngine = {
 
-            if (isDark) {
-                body.classList.add('dark-theme');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                body.classList.remove('dark-theme');
-                localStorage.setItem('theme', 'light');
+            translations: {
+                ru: {
+                    pageTitle: "Страница не найдена | PAT-STUDIO",
+                    errorTitle: "Страница не найдена",
+                    errorDesc: "Запрашиваемый адрес недоступен, удален или никогда не существовал на серверах PAT-STUDIO. Возможно, вы перешли по устаревшей ссылке.",
+                    btnHome: "Вернуться на главную"
+                },
+                en: {
+                    pageTitle: "Page Not Found | PAT-STUDIO",
+                    errorTitle: "Page Not Found",
+                    errorDesc: "The requested address is unavailable, deleted, or never existed on PAT-STUDIO servers. You may have followed an outdated link.",
+                    btnHome: "Return to Homepage"
+                },
+                zh: {
+                    pageTitle: "找不到页面 | PAT-STUDIO",
+                    errorTitle: "找不到页面",
+                    errorDesc: "请求的地址不可用、已删除或在 PAT-STUDIO 服务器上从未存在。您可能访问了过期的链接。",
+                    btnHome: "返回主页"
+                },
+                it: {
+                    pageTitle: "Pagina non trovata | PAT-STUDIO",
+                    errorTitle: "Pagina non trovata",
+                    errorDesc: "L'indirizzo richiesto non è disponibile, è stato eliminato o non è mai esistito sui server PAT-STUDIO. Potresti aver seguito un link obsoleto.",
+                    btnHome: "Torna alla Home"
+                },
+                ar: {
+                    pageTitle: "الصفحة غير موجودة | PAT-STUDIO",
+                    errorTitle: "الصفحة غير موجودة",
+                    errorDesc: "العنوان المطلوب غير متوفر، أو تم حذفه، أو لم يكن موجودًا أبدًا على خوادم PAT-STUDIO. ربما تكون قد اتبعت رابطًا قديمًا.",
+                    btnHome: "العودة إلى الرئيسية"
+                }
+            },
+
+            init() {
+                this.setupTheme();
+                this.setupLanguage();
+            },
+
+            setupTheme() {
+
+                const savedTheme = localStorage.getItem('pat_theme') || localStorage.getItem('theme') || 'light';
+                document.documentElement.setAttribute('data-theme', savedTheme);
+
+                if (savedTheme === 'dark') {
+                    document.body.classList.add('dark-theme');
+                    document.body.classList.add('dark');
+                } else {
+                    document.body.classList.remove('dark-theme');
+                    document.body.classList.remove('dark');
+                }
+            },
+
+            setupLanguage() {
+
+                let savedLang = localStorage.getItem('pat_lang') || localStorage.getItem('language') || 'ru';
+
+
+                if (!this.translations[savedLang]) {
+                    savedLang = 'en';
+                }
+
+                document.documentElement.lang = savedLang;
+                document.title = this.translations[savedLang].pageTitle;
+
+                if (savedLang === 'ar') {
+                    document.body.classList.add('rtl');
+                } else {
+                    document.body.classList.remove('rtl');
+                }
+
+                document.querySelectorAll('[data-key]').forEach(element => {
+                    const key = element.getAttribute('data-key');
+                    if (this.translations[savedLang] && this.translations[savedLang][key]) {
+                        element.textContent = this.translations[savedLang][key];
+                    }
+                });
             }
-        }
+        };
 
-        function changeLanguage(lang) {
-            document.documentElement.lang = lang;
-
-            if (lang === 'ru') {
-                document.title = 'Страница не найдена | PAT-STUDIO';
-            } else {
-                document.title = 'Page not found | PAT-STUDIO';
-            }
-
-            document.querySelectorAll('[data-ru][data-en]').forEach(element => {
-                element.textContent = element.getAttribute(`data-${lang}`);
-            });
-
-            localStorage.setItem('language', lang);
-        }
-
-        function loadSettings() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            if (savedTheme === 'dark') {
-                toggleTheme(true);
-            } else {
-                toggleTheme(false);
-            }
-
-            const savedLang = localStorage.getItem('language') || 'ru';
-            changeLanguage(savedLang);
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelector('video').play().catch(e => console.log("Видео автовоспроизведение:", e));
-
-            loadSettings();
+        document.addEventListener('DOMContentLoaded', () => {
+            ErrorEngine.init();
         });
     </script>
+
+
+<script>
+
+    if (window.location.pathname.endsWith('404.html')) {
+        const cleanPath = window.location.pathname.replace('404.html', 'error: 404');
+        window.history.replaceState(null, '', cleanPath);
+    } else if (window.location.pathname.endsWith('/') || window.location.pathname === '') {
+        window.history.replaceState(null, '', window.location.pathname + 'error: 404');
+    }
+
+</script>
+
 </body>
 </html>
