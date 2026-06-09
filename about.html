@@ -1,512 +1,1524 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Информация | PAT-STUDIO</title>
+    <title>About | PAT-STUDIO</title>
     <style>
+        /*СИС*/
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f5f7;
+            --text-primary: #000000;
+            --text-secondary: #6e6e73;
+            --border-color: #e5e5e5;
+            --badge-bg: #000000;
+            --badge-text: #ffffff;
+            --accent-gold: #d4af37;
+            --font-samsung: "SamsungOne", "Inter", -apple-system, sans-serif;
+            --transition-smooth: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            --transition-fast: all 0.2s ease;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #000000;
+            --bg-secondary: #0b0b0c;
+            --text-primary: #ffffff;
+            --text-secondary: #86868b;
+            --border-color: #1a1a1a;
+            --badge-bg: #ffffff;
+            --badge-text: #000000;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            outline: none;
         }
 
         body {
-            font-family: Arial, sans-serif;
-            background-color: white;
-            color: black;
-            line-height: 1.6;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            font-family: "SamsungOne", "Inter", "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            line-height: 1.5;
         }
 
-        body.dark-theme {
-            background-color: #121212;
-            color: #e0e0e0;
+        body.rtl {
+            direction: rtl;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
         }
 
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: var(--transition-smooth);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- ШАПКА --- */
         .header {
-            background-color: white;
-            padding: 20px 0;
-            border-bottom: 1px solid #eee;
-            position: sticky;
+            position: fixed;
             top: 0;
+            left: 0;
+            width: 100%;
+            height: 56px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            transition: border-color 0.5s ease;
         }
 
-        body.dark-theme .header {
-            background-color: #1a1a1a;
-            border-bottom: 1px solid #333;
+        [data-theme="dark"] .header {
+            background: rgba(0, 0, 0, 0.7);
         }
 
-        .header-content {
+        .header-container {
+            width: 100%;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .menu {
+        .logo-zone {
             display: flex;
-            gap: 40px;
+            align-items: center;
+            gap: 48px;
+        }
+
+        .logo {
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: opacity 0.2s;
+        }
+
+        .logo:hover {
+            opacity: 0.7;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 32px;
             list-style: none;
         }
 
-        .menu-item {
+        .nav-link {
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            color: var(--text-secondary);
+            transition: var(--transition-fast);
             position: relative;
         }
 
-        .menu-item a {
-            text-decoration: none;
-            color: #333;
-            font-size: 18px;
-            padding: 10px 5px;
-            transition: color 0.3s ease;
+        .nav-link:hover {
+            color: var(--text-primary);
         }
 
-        body.dark-theme .menu-item a {
-            color: #e0e0e0;
-        }
-
-        .menu-item.active a {
-            color: #0088cc;
-        }
-
-        .menu-item.active::after {
+        .nav-link.active::after {
             content: '';
             position: absolute;
-            bottom: -5px;
+            bottom: -8px;
             left: 0;
             right: 0;
-            height: 3px;
-            background-color: #0088cc;
+            height: 2px;
+            background: var(--accent-gold);
         }
 
-        .controls {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .toggle-container {
+        .controls-zone {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 24px;
         }
 
-        .toggle-label {
-            font-size: 14px;
-            color: #666;
-            font-weight: normal;
+        .header-support {
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            color: #000000;
+            transition: opacity 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            margin-left: 20px;
         }
 
-        body.dark-theme .toggle-label {
-            color: #aaa;
+        .header-support:hover {
+            opacity: 0.7;
         }
 
-        .theme-toggle {
+        [data-theme="dark"] .header-support {
+            color: #ffffff;
+        }
+
+        @media (max-width: 600px) {
+            .header-support {
+                font-size: 12px;
+                margin-left: 12px;
+            }
+        }
+
+        /* --- ПЕРЕКЛЮЧАТЕЛЬ ЯЗЫКОВ --- */
+
+        .lang-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 26px;
-        }
-
-        .theme-toggle input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .toggle-slider {
-            position: absolute;
+            padding: 8px 14px;
+            border-radius: 50px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            transition: background-color 0.2s ease, border-color 0.2s ease;
             cursor: pointer;
-            top: 0;
-            left: 0;
+            user-select: none;
+        }
+
+        .lang-wrapper:hover {
+            background: var(--border-color);
+        }
+
+        .lang-icon {
+            width: 16px;
+            height: 16px;
+            stroke: var(--text-secondary);
+            transition: stroke 0.2s ease;
+        }
+
+        .lang-wrapper:hover .lang-icon {
+            stroke: var(--text-primary);
+        }
+
+        .lang-current {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-family: "SamsungOne", "Inter", "Helvetica Neue", Arial, sans-serif;
+        }
+
+        .lang-arrow {
+            stroke: var(--text-secondary);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.2s ease;
+        }
+
+        .lang-wrapper.open .lang-arrow {
+            transform: rotate(180deg);
+            stroke: var(--text-primary);
+        }
+
+        .lang-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
             right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: 0.4s;
-            border-radius: 34px;
-        }
-
-        .toggle-slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: 0.4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .toggle-slider {
-            background-color: #0088cc;
-        }
-
-        input:checked + .toggle-slider:before {
-            transform: translateX(24px);
-        }
-
-        .lang-select {
-            padding: 6px 12px;
-            border: 1px solid #0088cc;
-            background-color: white;
-            color: #0088cc;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-
-        body.dark-theme .lang-select {
-            background-color: #2d2d2d;
-            color: #0088cc;
-        }
-
-        .studio-header {
-            text-align: center;
-            padding: 60px 0 40px;
-            background: linear-gradient(to bottom, #f8f9fa, white);
-        }
-
-        body.dark-theme .studio-header {
-            background: linear-gradient(to bottom, #1e1e1e, #121212);
-        }
-
-        .studio-name {
-            font-size: 48px;
-            color: #0088cc;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .reasons-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 40px;
-            margin-bottom: 60px;
-        }
-
-        .reason-item {
-            text-align: center;
-            padding: 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 6px;
+            min-width: 130px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             opacity: 0;
-            transform: translateY(60px);
-            transition: opacity 0.25s ease-out, transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            pointer-events: none;
+            transform: translateY(-10px);
+            transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1100;
         }
 
-        .reason-item.visible {
+        .lang-wrapper.open .lang-dropdown {
             opacity: 1;
+            pointer-events: auto;
             transform: translateY(0);
         }
 
-        .reason-item:hover {
-            transform: translateY(-5px) scale(1.02);
-            transition: transform 0.3s ease;
+        .lang-option {
+            padding: 8px 12px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+            border-radius: 10px;
+            font-family: "SamsungOne", "Inter", "Helvetica Neue", Arial, sans-serif;
+            transition: background-color 0.2s ease;
+            text-align: left;
+            cursor: pointer;
         }
 
-        .reason-video {
-            width: 200px;
-            height: 200px;
-            object-fit: cover;
-            margin: 0 auto 15px;
-            border-radius: 8px;
+        body.rtl .lang-option {
+            text-align: right;
+        }
+
+        .lang-option:hover {
+            background: var(--border-color);
+        }
+
+        /* --- ТЕМА --- */
+
+        .theme-toggle-btn {
+            background: none;
+            border: none;
+            padding: 8px;
+            margin-left: 10px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50px;
+            transition: background-color 0.2s ease;
+        }
+
+        .theme-toggle-btn:hover {
+            background: var(--border-color);
+        }
+
+        .theme-icon {
+            width: 18px;
+            height: 18px;
+            display: block;
+            filter: brightness(0) opacity(0.6);
+            transition: filter 0.2s ease, opacity 0.2s ease;
+        }
+
+        [data-theme="dark"] .theme-icon {
+            filter: brightness(0) invert(1) opacity(0.6);
+        }
+
+        [data-theme="dark"] .theme-toggle-btn:hover .theme-icon {
+            filter: brightness(0) invert(1) opacity(1);
+        }
+
+        .theme-toggle-btn:hover .theme-icon {
+            filter: brightness(0) opacity(1);
+        }
+
+        .main-content {
+            padding-top: 56px;
+            background: var(--bg-primary);
+        }
+
+        .section-header {
+            padding: 120px 40px 80px;
+            max-width: 1440px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .section-tag {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
             display: block;
         }
 
-        .reason-title {
-            font-size: 22px;
-            color: #0088cc;
-            margin-bottom: 10px;
-            font-weight: bold;
+        .section-main-title {
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            color: var(--text-primary);
+            margin-bottom: 20px;
         }
 
-        .reason-text {
-            font-size: 16px;
-            color: #666;
+        .section-subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 900px;
+            margin: 0 auto;
             line-height: 1.6;
         }
 
-        body.dark-theme .reason-text {
-            color: #aaa;
+        /* --- СЕТКА УСЛУГ --- */
+        .services-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 40px 120px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
         }
 
-        .reason-list {
-            list-style: none;
-            margin-top: 15px;
-            display: inline-block;
-            text-align: left;
-        }
-
-        .reason-list li {
+        .service-card {
+            background: var(--bg-secondary);
+            border-radius: 28px;
+            padding: 60px;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 40px;
+            align-items: center;
+            min-height: 420px;
+            overflow: hidden;
             position: relative;
-            padding-left: 20px;
-            margin-bottom: 8px;
+            transition: transform 0.5s ease, background-color 0.5s ease;
+            border: 1px solid var(--border-color);
         }
 
-        .reason-list li::before {
-            content: "•";
-            color: #0088cc;
+        .service-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .service-card.inverted {
+            grid-template-columns: 1fr 1.2fr;
+        }
+
+        .service-info {
+            z-index: 2;
+        }
+
+        .service-tag {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+            color: var(--accent-gold);
+            display: inline-block;
+        }
+
+        .service-title {
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 24px;
+            letter-spacing: -0.5px;
+            color: var(--text-primary);
+        }
+
+        .service-text {
+            font-size: 16px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            max-width: 480px;
+            margin-bottom: 24px;
+        }
+
+        .service-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .service-list li {
+            font-size: 15px;
+            color: var(--text-secondary);
+            padding-left: 0;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .service-list li::before {
+            content: "→";
+            color: var(--accent-gold);
             position: absolute;
-            left: 0;
+            left: -20px;
             font-weight: bold;
+            font-size: 16px;
         }
 
-        .approach-box {
-            padding: 40px 0;
-            margin-top: 40px;
-            text-align: center;
+        .service-visual {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ui-mockup {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            width: 100%;
+            max-width: 400px;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.04);
+            transform: translateY(20px);
             opacity: 0;
-            transform: translateY(50px);
-            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
         }
 
-        .approach-box.visible {
-            opacity: 1;
+        .service-card.active .ui-mockup {
             transform: translateY(0);
+            opacity: 1;
         }
 
-        .footer {
-            background-color: #f8f9fa;
-            padding: 40px 0;
+        .ui-line {
+            height: 6px;
+            background: var(--border-color);
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+        .ui-line.short { width: 40%; }
+        .ui-line.medium { width: 70%; }
+        .ui-line.long { width: 100%; }
+
+        .ui-badge-preview {
+            display: inline-block;
+            background: var(--badge-bg);
+            color: var(--badge-text);
+            padding: 4px 10px;
+            font-size: 10px;
+            font-weight: 700;
+            border-radius: 6px;
+            margin-bottom: 16px;
+        }
+
+        /* --- СЕКЦИЯ МЕТОДОЛОГИИ --- */
+        .approach-section {
+            background: var(--bg-secondary);
+            padding: 100px 40px;
+        }
+
+        .approach-wrapper {
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        .approach-header {
             text-align: center;
-            border-top: 1px solid #eee;
-            margin-top: 60px;
+            margin-bottom: 80px;
         }
 
-        body.dark-theme .footer {
-            background-color: #1a1a1a;
-            border-top: 1px solid #333;
+        .approach-title {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 24px;
+            letter-spacing: -1px;
         }
 
-        .footer-logo {
-            font-size: 18px;
-            font-weight: bold;
-            color: #0088cc;
-            margin-bottom: 10px;
+        .approach-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+        }
+
+        .approach-item {
+            background: var(--bg-primary);
+            border-radius: 20px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            border: 1px solid var(--border-color);
+            transition: all 0.5s ease;
+        }
+
+        .approach-item:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-gold);
+        }
+
+        .approach-item-number {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--accent-gold);
+        }
+
+        .approach-item-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .approach-item-text {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* --- СЕТКА ЦЕННОСТЕЙ --- */
+        .values-section {
+            padding: 120px 40px;
+            background: var(--bg-primary);
+        }
+
+        .values-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .values-title {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 80px;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        .value-card {
+            background: var(--bg-secondary);
+            border-radius: 24px;
+            padding: 48px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: all 0.5s ease;
+        }
+
+        .value-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-gold);
+        }
+
+        .value-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .value-desc {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* --- ФУТЕР --- */
+        .footer {
+            background: var(--bg-primary);
+            border-top: 1px solid var(--border-color);
+            padding: 32px 40px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            transition: background-color 0.5s ease, border-color 0.5s ease;
+        }
+
+        .footer-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
         }
 
         .footer-copyright {
-            font-size: 14px;
-            color: #888;
-            margin-top: 20px;
+            font-weight: 400;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 16px;
+            list-style: none;
+        }
+
+        .footer-link-item a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+
+        .footer-link-item a:hover {
+            color: var(--text-primary);
+            text-decoration: underline;
+        }
+
+        .footer-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .footer-tg {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer-tg:hover {
+            text-decoration: underline;
+        }
+
+        /* --- АДАПТИВНОСТЬ --- */
+        @media (max-width: 1024px) {
+            .service-card, .service-card.inverted {
+                grid-template-columns: 1fr;
+                padding: 40px;
+                min-height: auto;
+            }
+            .approach-grid {
+                grid-template-columns: 1fr;
+            }
+            .values-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .section-main-title {
+                font-size: 36px;
+            }
         }
 
         @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 20px;
+            .header-container {
+                padding: 0 20px;
             }
-            .reasons-grid {
+            .nav-menu {
+                display: none;
+            }
+            .section-header {
+                padding: 80px 20px 60px;
+            }
+            .services-container {
+                padding: 0 20px 80px;
+                gap: 24px;
+            }
+            .service-card {
+                padding: 40px;
+            }
+            .approach-section {
+                padding: 80px 20px;
+            }
+            .values-section {
+                padding: 80px 20px;
+            }
+            .values-grid {
                 grid-template-columns: 1fr;
             }
-            .menu {
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 20px;
+            .approach-grid {
+                grid-template-columns: 1fr;
+            }
+            .section-main-title {
+                font-size: 32px;
+            }
+            .footer-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            .service-list li::before {
+                left: 0;
+            }
+            .service-text {
+                max-width: 100%;
             }
         }
     </style>
 </head>
+
 <body>
 
-    <div class="header">
-        <div class="container">
-            <div class="header-content">
-                <ul class="menu">
-                    <li class="menu-item">
-                        <a href="index.html" data-ru="главная" data-en="home">главная</a>
-                    </li>
-                    <li class="menu-item active">
-                        <a href="about.html" data-ru="информация" data-en="about">информация</a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="orders.html" data-ru="заказы" data-en="orders">заказы</a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="chat.html" data-ru="чат" data-en="chat">чат</a>
-                    </li>
-                </ul>
-                <div class="controls">
-                    <div class="toggle-container">
-                        <span class="toggle-label" data-ru="Тема" data-en="Theme">Тема</span>
-                        <label class="theme-toggle">
-                            <input type="checkbox" id="themeSwitch">
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                    <select class="lang-select" id="languageSelect">
+    <!-- ШАПКА САЙТА -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo-zone">
+                <a href="index.html" class="logo">PAT-STUDIO</a>
+                <nav>
+                    <ul class="nav-menu">
+                        <li><a href="index.html" class="nav-link" data-key="navHome">Главная</a></li>
+                        <li><a href="about.html" class="nav-link active" data-key="navAbout">Информация</a></li>
+                        <li><a href="orders.html" class="nav-link" data-key="navOrders">Заказы</a></li>
+                        <li><a href="chat.html" class="nav-link" data-key="navChat">Чат</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <div class="controls-zone">
+                <div class="lang-wrapper" id="customLangWidget" onclick="toggleLangMenu(event)">
+                    <svg class="lang-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                    <span class="lang-current" id="currentLangText">Русский</span>
+                    <svg class="lang-arrow" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+
+                    <select id="langSelect" style="display: none;" onchange="AppEngine.changeLanguage(this.value)">
                         <option value="ru">Русский</option>
                         <option value="en">English</option>
+                        <option value="zh">中文</option>
+                        <option value="it">Italiano</option>
+                        <option value="ar">العربية</option>
                     </select>
+
+                    <div class="lang-dropdown" id="langDropdownMenu">
+                        <div class="lang-option" onclick="selectLanguage('ru', 'Русский')">Русский</div>
+                        <div class="lang-option" onclick="selectLanguage('en', 'English')">English</div>
+                        <div class="lang-option" onclick="selectLanguage('zh', '中文')">中文</div>
+                        <div class="lang-option" onclick="selectLanguage('it', 'Italiano')">Italiano</div>
+                        <div class="lang-option" onclick="selectLanguage('ar', 'العربية')">العربية</div>
+                    </div>
+                </div>
+
+                <button class="theme-toggle-btn" onclick="AppEngine.toggleTheme()" aria-label="Toggle Theme">
+                    <img src="theme.png" class="theme-icon" alt="Theme">
+                </button>
+                <a href="https://t.me/PaT_Support" target="_blank" class="header-support" data-key="headerSupport">Support</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ОСНОВНОЙ КОНТЕНТ -->
+    <main class="main-content">
+
+        <div class="section-header reveal">
+            <span class="section-tag" data-key="aboutTag">О нас</span>
+            <h1 class="section-main-title" data-key="aboutTitle">О нашей студии</h1>
+            <p class="section-subtitle" data-key="aboutDescription">PAT-STUDIO — это команда профессионалов, которая занимается разработкой IT-решений любой сложности. Мы создаем продукты, которые решают реальные задачи бизнеса и пользователей.</p>
+        </div>
+
+        <div class="services-container">
+            <!-- Плашка 1 -->
+            <div class="service-card reveal">
+                <div class="service-info">
+                    <span class="service-tag" data-key="serviceTag1">ИГРЫ</span>
+                    <h3 class="service-title" data-key="serviceTitle1">Игры и игровые проекты</h3>
+                    <p class="service-text" data-key="serviceText1">Разработка полнофункциональных игр и игровых приложений с использованием современных технологий.</p>
+                    <ul class="service-list">
+                        <li data-key="serviceItem1_1">Разработка игр на Roblox, Unity, Blender</li>
+                        <li data-key="serviceItem1_2">2D/3D графика и анимация</li>
+                        <li data-key="serviceItem1_3">Игровая логика и скриптинг</li>
+                        <li data-key="serviceItem1_4">Порты на мобильные платформы</li>
+                        <li data-key="serviceItem1_5">Мультиплеер и сетевая интеграция</li>
+                    </ul>
+                </div>
+                <div class="service-visual">
+                    <div class="ui-mockup">
+                        <div class="ui-badge-preview">Games</div>
+                        <div class="ui-line long"></div>
+                        <div class="ui-line medium"></div>
+                        <div class="ui-line short"></div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div class="studio-header">
-        <div class="container">
-            <h1 class="studio-name" data-ru="О нашей студии" data-en="About our studio">О нашей студии</h1>
-            <p class="reason-text" style="max-width: 900px; margin: 0 auto;"
-               data-ru="PAT-STUDIO — это команда профессионалов, которая занимается разработкой IT-решений любой сложности. Мы создаем продукты, которые решают реальные задачи бизнеса и пользователей."
-               data-en="PAT-STUDIO is a team of professionals specializing in IT solutions of any complexity. We create products that solve real business and user problems.">
-                <strong>PAT-STUDIO</strong> — это команда профессионалов, которая занимается разработкой IT-решений любой сложности. Мы создаем продукты, которые решают реальные задачи бизнеса и пользователей.
-            </p>
-        </div>
-    </div>
+            <!-- Плашка 2 -->
+            <div class="service-card inverted reveal">
+                <div class="service-visual">
+                    <div class="ui-mockup">
+                        <div class="ui-badge-preview" style="background: var(--accent-gold); color: #000;">Web</div>
+                        <div class="ui-line medium"></div>
+                        <div class="ui-line long"></div>
+                        <div class="ui-line medium"></div>
+                    </div>
+                </div>
+                <div class="service-info">
+                    <span class="service-tag" data-key="serviceTag2">ВЕБ</span>
+                    <h3 class="service-title" data-key="serviceTitle2">Веб-разработка</h3>
+                    <p class="service-text" data-key="serviceText2">Создание современных веб-приложений и сайтов любой сложности и функциональности.</p>
+                    <ul class="service-list">
+                        <li data-key="serviceItem2_1">Сайты-визитки и корпоративные порталы</li>
+                        <li data-key="serviceItem2_2">Интернет-магазины и маркетплейсы</li>
+                        <li data-key="serviceItem2_3">Веб-приложения любой сложности</li>
+                        <li data-key="serviceItem2_4">Frontend и Backend разработка</li>
+                        <li data-key="serviceItem2_5">API интеграции и микросервисы</li>
+                    </ul>
+                </div>
+            </div>
 
-    <div class="container">
-        <div class="reasons-grid">
+            <!-- Плашка 3 -->
+            <div class="service-card reveal">
+                <div class="service-info">
+                    <span class="service-tag" data-key="serviceTag3">БОТЫ</span>
+                    <h3 class="service-title" data-key="serviceTitle3">Автоматизация и боты</h3>
+                    <p class="service-text" data-key="serviceText3">Разработка интеллектуальных ботов и систем для оптимизации бизнес-процессов.</p>
+                    <ul class="service-list">
+                        <li data-key="serviceItem3_1">Telegram-боты с AI функционалом</li>
+                        <li data-key="serviceItem3_2">Парсинг данных и аналитика</li>
+                        <li data-key="serviceItem3_3">Чат-боты для поддержки и продаж</li>
+                        <li data-key="serviceItem3_4">Автоматизация бизнес-процессов</li>
+                        <li data-key="serviceItem3_5">Интеграция с внешними API</li>
+                    </ul>
+                </div>
+                <div class="service-visual">
+                    <div class="ui-mockup">
+                        <div class="ui-badge-preview">Bots</div>
+                        <div class="ui-line long"></div>
+                        <div class="ui-line long"></div>
+                        <div class="ui-line short"></div>
+                    </div>
+                </div>
+            </div>
 
-            <div class="reason-item">
-                <video class="reason-video" autoplay muted loop playsinline>
-                    <source src="image/GameDuck.mp4" type="video/mp4">
-                </video>
-                <div class="reason-title" data-ru="Игры и игровые проекты" data-en="Games and game projects">Игры и игровые проекты</div>
-                <ul class="reason-list">
-                    <li data-ru="Разработка игр на Roblox, Unity, Blender и другом" data-en="Game development on Roblox, Unity, Blender and others">Разработка игр на Roblox, Unity, Blender и другом</li>
-                    <li data-ru="2D/3D графика и анимация" data-en="2D/3D graphics and animation">2D/3D графика и анимация</li>
-                    <li data-ru="Игровая логика и скриптинг" data-en="Game logic and scripting">Игровая логика и скриптинг</li>
-                    <li data-ru="Порты на мобильные платформы" data-en="Ports to mobile platforms">Порты на мобильные платформы</li>
-                    <li data-ru="Мультиплеер и сетевая интеграция" data-en="Multiplayer and network integration">Мультиплеер и сетевая интеграция</li>
+            <!-- Плашка 4 -->
+            <div class="service-card inverted reveal">
+                <div class="service-visual">
+                    <div class="ui-mockup">
+                        <div class="ui-badge-preview" style="background: var(--accent-gold); color: #000;">More</div>
+                        <div class="ui-line short"></div>
+                        <div class="ui-line long"></div>
+                        <div class="ui-line long"></div>
+                    </div>
+                </div>
+                <div class="service-info">
+                    <span class="service-tag" data-key="serviceTag4">ПРОЧЕЕ</span>
+                    <h3 class="service-title" data-key="serviceTitle4">И многое другое</h3>
+                    <p class="service-text" data-key="serviceText4">Полный спектр услуг по разработке, включая консультации и обучение.</p>
+                    <ul class="service-list">
+                        <li data-key="serviceItem4_1">Продажа созданных систем</li>
+                        <li data-key="serviceItem4_2">Продажа библиотек</li>
+                        <li data-key="serviceItem4_3">Продажа игр</li>
+                        <li data-key="serviceItem4_4">Продажа искусственного интеллекта</li>
+                        <li data-key="serviceItem4_5">Индивидуальное обучение разработке</li>
+                    </ul>
+                </div>
+            </div>
+            </div>
+
+        <!-- ПОДХОД К РАБОТЕ -->
+        <section class="approach-section">
+            <div class="approach-wrapper">
+                <div class="approach-header reveal">
+                    <span class="section-tag" data-key="approachTag">Методология</span>
+                    <h2 class="approach-title" data-key="approachTitle">Наш подход к работе</h2>
+                </div>
+
+                <div class="approach-grid">
+                    <div class="approach-item reveal">
+                        <div class="approach-item-number">01</div>
+                        <div class="approach-item-title" data-key="approachStep1">Анализ</div>
+                        <p class="approach-item-text" data-key="approachText1">Тщательный анализ требований и планирование архитектуры решения.</p>
+                    </div>
+                    <div class="approach-item reveal">
+                        <div class="approach-item-number">02</div>
+                        <div class="approach-item-title" data-key="approachStep2">Разработка</div>
+                        <p class="approach-item-text" data-key="approachText2">Профессиональная разработка кода по лучшим практикам индустрии.</p>
+                    </div>
+                    <div class="approach-item reveal">
+                        <div class="approach-item-number">03</div>
+                        <div class="approach-item-title" data-key="approachStep3">Тестирование</div>
+                        <p class="approach-item-text" data-key="approachText3">Комплексное тестирование качества и поиск всех дефектов.</p>
+                    </div>
+                    <div class="approach-item reveal">
+                        <div class="approach-item-number">04</div>
+                        <div class="approach-item-title" data-key="approachStep4">Развертывание</div>
+                        <p class="approach-item-text" data-key="approachText4">Безопасное развертывание на хостинг с минимальными перерывами.</p>
+                    </div>
+                    <div class="approach-item reveal">
+                        <div class="approach-item-number">05</div>
+                        <div class="approach-item-title" data-key="approachStep5">Поддержка</div>
+                        <p class="approach-item-text" data-key="approachText5">Постоянная техническая поддержка, обновления и совершенствование.</p>
+                    </div>
+                    <div class="approach-item reveal">
+                        <div class="approach-item-number">06</div>
+                        <div class="approach-item-title" data-key="approachStep6">Документация</div>
+                        <p class="approach-item-text" data-key="approachText6">Полная техническая документация для вашего полного понимания.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    <!-- НИЖНИЙ БАР -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-left">
+                <span class="footer-copyright">Copyright © 2024-2026 PAT-STUDIO. All Rights Reserved.</span>
+                <ul class="footer-links">
+                    <li class="footer-link-item"><a href="/license.html" data-key="footerTerms">Политика конфиденциальности</a></li>
                 </ul>
             </div>
-
-            <div class="reason-item">
-                <video class="reason-video" autoplay muted loop playsinline>
-                    <source src="image/WebDuck.mp4" type="video/mp4">
-                </video>
-                <div class="reason-title" data-ru="Веб-разработка" data-en="Web development">Веб-разработка</div>
-                <ul class="reason-list">
-                    <li data-ru="Сайты-визитки и корпоративные порталы" data-en="Business card websites and corporate portals">Сайты-визитки и корпоративные порталы</li>
-                    <li data-ru="Интернет-магазины и маркетплейсы" data-en="Online stores and marketplaces">Интернет-магазины и маркетплейсы</li>
-                    <li data-ru="Веб-приложения любой сложности" data-en="Web applications of any complexity">Веб-приложения любой сложности</li>
-                    <li data-ru="Frontend и Backend разработка" data-en="Frontend and Backend development">Frontend и Backend разработка</li>
-                    <li data-ru="API интеграции и микросервисы" data-en="API integrations and microservices">API интеграции и микросервисы</li>
-                </ul>
-            </div>
-
-            <div class="reason-item">
-                <video class="reason-video" autoplay muted loop playsinline>
-                    <source src="image/BotDuck.mp4" type="video/mp4">
-                </video>
-                <div class="reason-title" data-ru="Автоматизация и боты" data-en="Automation and bots">Автоматизация и боты</div>
-                <ul class="reason-list">
-                    <li data-ru="Telegram-боты с AI функционалом" data-en="Telegram bots with AI functionality">Telegram-боты с AI функционалом</li>
-                    <li data-ru="Парсинг данных и аналитика" data-en="Data parsing and analytics">Парсинг данных и аналитика</li>
-                    <li data-ru="Чат-боты для поддержки и продаж" data-en="Chatbots for support and sales">Чат-боты для поддержки и продаж</li>
-                    <li data-ru="Автоматизация бизнес-процессов" data-en="Business process automation">Автоматизация бизнес-процессов</li>
-                    <li data-ru="Интеграция с внешними API" data-en="Integration with external APIs">Интеграция с внешними API</li>
-                </ul>
-            </div>
-
-            <div class="reason-item">
-                <video class="reason-video" autoplay muted loop playsinline>
-                    <source src="image/OtherDuck.mp4" type="video/mp4">
-                </video>
-                <div class="reason-title" data-ru="И многое другое" data-en="And much more">И многое другое</div>
-                <ul class="reason-list">
-                    <li data-ru="Продажа созданных систем" data-en="Sale of created systems">Продажа созданных систем</li>
-                    <li data-ru="Продажа библиотек" data-en="Sale of libraries">Продажа библиотек</li>
-                    <li data-ru="Продажа игр" data-en="Sale of games">Продажа игр</li>
-                    <li data-ru="Продажа искусственного интеллекта на аккаунт" data-en="Sale of AI for accounts">Продажа искусственного интеллекта на аккаунт</li>
-                    <li data-ru="Индивидуальное обучение разработке" data-en="Individual development training">Индивидуальное обучение разработке</li>
-                </ul>
-            </div>
-
-        </div>
-
-        <div class="approach-box">
-            <h2 class="reason-title" data-ru="Наш подход к работе" data-en="Our approach">Наш подход к работе</h2>
-            <p class="reason-text" data-ru="Мы работаем по полному циклу: от анализа задачи и проектирования до разработки, тестирования, запуска и поддержки проекта."
-               data-en="We work on a full cycle: from task analysis and design to development, testing, launch and project support.">
-                Мы работаем по полному циклу: от анализа задачи и проектирования до разработки, тестирования, запуска и поддержки проекта.
-            </p>
-            <p class="reason-text" style="margin-top: 15px;"
-               data-ru="Каждый проект проходит через строгий контроль качества, мы предоставляем полную техническую документацию и гарантируем работоспособность решения."
-               data-en="Each project goes through strict quality control, we provide full technical documentation and guarantee the solution's functionality.">
-                Каждый проект проходит через строгий контроль качества, мы предоставляем полную техническую документацию и гарантируем работоспособность решения.
-            </p>
-        </div>
-    </div>
-
-    <div class="footer">
-        <div class="container">
-            <div class="footer-logo">PAT-STUDIO</div>
-            <p class="reason-text" data-ru="PAT-STUDIO это компания по разработке IT функциональности" data-en="PAT-STUDIO is an IT development company">
-                PAT-STUDIO это компания по разработке IT функциональности
-            </p>
-            <div class="footer-copyright" data-ru="© 2026 PAT-STUDIO. Все права защищены." data-en="© 2026 PAT-STUDIO. All rights reserved.">
-                © 2026 PAT-STUDIO. Все права защищены.
+            <div class="footer-right">
+                <a href="https://t.me/Studio_Patx" target="_blank" class="footer-tg">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12.003 21.144c-4.832 0-8.991-3.614-9.664-8.384l-.008-.073c-.76-5.41 3.018-10.273 8.428-11.033 5.41-.76 10.273 3.018 11.033 8.428.718 5.112-2.617 9.805-7.697 10.91l-.147.03c-.636.126-1.288.193-1.945.193zm-1.573-7.536l.247 3.513c.354 0 .506-.163.69-.34l1.636-1.574 3.394 2.503c.623.344 1.07.167 1.226-.575l2.224-10.48c.227-.91-.346-1.32-.942-1.052L6.151 12.04c-.883.22-.873.714-.155.935l3.328 1.04 7.712-4.866c.363-.22.696-.102.424.14l-6.248 5.64-.176-.328z"/></svg>
+                    T.me/Studio_Patx
+                </a>
             </div>
         </div>
-    </div>
+    </footer>
 
+    <!-- СИСТЕМНЫЕ СКРИПТЫ, АНИМАЦИИ И ПЕРЕВОДЫ -->
     <script>
-        function toggleTheme(isDark) {
-            const body = document.body;
-            const themeSwitch = document.getElementById('themeSwitch');
-            if (isDark) {
-                body.classList.add('dark-theme');
-                themeSwitch.checked = true;
-                localStorage.setItem('theme', 'dark');
-            } else {
-                body.classList.remove('dark-theme');
-                themeSwitch.checked = false;
-                localStorage.setItem('theme', 'light');
+        const AppEngine = {
+            translations: {
+                ru: {
+                    headerSupport: "Поддержка",
+                    navHome: "Главная",
+                    navAbout: "Информация",
+                    navOrders: "Заказы",
+                    navChat: "Чат",
+                    aboutTag: "О нас",
+                    aboutTitle: "О нашей студии",
+                    aboutDescription: "PAT-STUDIO — это команда профессионалов, которая занимается разработкой IT-решений любой сложности. Мы создаем продукты, которые решают реальные задачи бизнеса и пользователей.",
+                    serviceTag1: "ИГРЫ",
+                    serviceTitle1: "Игры и игровые проекты",
+                    serviceText1: "Разработка полнофункциональных игр и игровых приложений с использованием современных технологий.",
+                    serviceItem1_1: "Разработка игр на Roblox, Unity, Blender",
+                    serviceItem1_2: "2D/3D графика и анимация",
+                    serviceItem1_3: "Игровая логика и скриптинг",
+                    serviceItem1_4: "Порты на мобильные платформы",
+                    serviceItem1_5: "Мультиплеер и сетевая интеграция",
+                    serviceTag2: "ВЕБ",
+                    serviceTitle2: "Веб-разработка",
+                    serviceText2: "Создание современных веб-приложений и сайтов любой сложности и функциональности.",
+                    serviceItem2_1: "Сайты-визитки и корпоративные порталы",
+                    serviceItem2_2: "Интернет-магазины и маркетплейсы",
+                    serviceItem2_3: "Веб-приложения любой сложности",
+                    serviceItem2_4: "Frontend и Backend разработка",
+                    serviceItem2_5: "API интеграции и микросервисы",
+                    serviceTag3: "БОТЫ",
+                    serviceTitle3: "Автоматизация и боты",
+                    serviceText3: "Разработка интеллектуальных ботов и систем для оптимизации бизнес-процессов.",
+                    serviceItem3_1: "Telegram-боты с AI функционалом",
+                    serviceItem3_2: "Парсинг данных и аналитика",
+                    serviceItem3_3: "Чат-боты для поддержки и продаж",
+                    serviceItem3_4: "Автоматизация бизнес-процессов",
+                    serviceItem3_5: "Интеграция с внешними API",
+                    serviceTag4: "ПРОЧЕЕ",
+                    serviceTitle4: "И многое другое",
+                    serviceText4: "Полный спектр услуг по разработке, включая консультации и обучение.",
+                    serviceItem4_1: "Продажа созданных систем",
+                    serviceItem4_2: "Продажа библиотек",
+                    serviceItem4_3: "Продажа игр",
+                    serviceItem4_4: "Продажа искусственного интеллекта",
+                    serviceItem4_5: "Индивидуальное обучение разработке",
+                    serviceTag5: "ОТКРЫТОСТЬ",
+                    serviceTitle5: "Открытая архитектура",
+                    serviceText5: "Расскажем как пишем код, объясним логику и архитектуру решения.",
+                    serviceItem5_1: "Полная документация проекта",
+                    serviceItem5_2: "Объяснение архитектуры",
+                    serviceItem5_3: "Обучение вашей команды",
+                    serviceItem5_4: "Консультации по коду",
+                    serviceItem5_5: "Поддержка и развитие",
+                    serviceTag6: "ГИБКОСТЬ",
+                    serviceTitle6: "Адаптивная гибкость",
+                    serviceText6: "Правки в течение 14 дней после сдачи, всегда готовы к изменениям.",
+                    serviceItem6_1: "Бесплатные правки после запуска",
+                    serviceItem6_2: "Готовность к масштабированию",
+                    serviceItem6_3: "Адаптация к новым требованиям",
+                    serviceItem6_4: "Гибкие условия сотрудничества",
+                    serviceItem6_5: "Долгосрочная поддержка",
+                    approachTag: "Методология",
+                    approachTitle: "Наш подход к работе",
+                    approachStep1: "Анализ",
+                    approachText1: "Тщательный анализ требований и планирование архитектуры решения.",
+                    approachStep2: "Разработка",
+                    approachText2: "Профессиональная разработка кода по лучшим практикам индустрии.",
+                    approachStep3: "Тестирование",
+                    approachText3: "Комплексное тестирование качества и поиск всех дефектов.",
+                    approachStep4: "Развертывание",
+                    approachText4: "Безопасное развертывание на хостинг с минимальными перерывами.",
+                    approachStep5: "Поддержка",
+                    approachText5: "Постоянная техническая поддержка, обновления и совершенствование.",
+                    approachStep6: "Документация",
+                    approachText6: "Полная техническая документация для вашего полного понимания.",
+                    valuesTag: "Ценности",
+                    valuesTitle: "Почему мы лучше",
+                    valueName1: "Скорость",
+                    valueDesc1: "Быстрое одобрение и выполнение заказов без ущерба качеству",
+                    valueName2: "Честность",
+                    valueDesc2: "Прозрачное общение и никогда не обманем наших клиентов",
+                    valueName3: "Качество",
+                    valueDesc3: "Строгий контроль качества на каждом этапе разработки",
+                    valueName4: "Гибкость",
+                    valueDesc4: "Адаптируемся к требованиям и готовы к изменениям",
+                    valueName5: "Открытость",
+                    valueDesc5: "Объясняем архитектуру, делимся знаниями и опытом",
+                    valueName6: "Партнерство",
+                    valueDesc6: "Долгосрочное сотрудничество и постоянная поддержка",
+                    footerTerms: "Политика конфендациальности"
+                },
+                en: {
+                    headerSupport: "Support",
+                    navHome: "Home",
+                    navAbout: "About",
+                    navOrders: "Orders",
+                    navChat: "Chat",
+                    aboutTag: "About Us",
+                    aboutTitle: "About our studio",
+                    aboutDescription: "PAT-STUDIO is a team of professionals specializing in IT solutions of any complexity. We create products that solve real business and user problems.",
+                    serviceTag1: "GAMES",
+                    serviceTitle1: "Games and gaming projects",
+                    serviceText1: "Development of full-featured games and gaming applications using modern technologies.",
+                    serviceItem1_1: "Game development on Roblox, Unity, Blender",
+                    serviceItem1_2: "2D/3D graphics and animation",
+                    serviceItem1_3: "Game logic and scripting",
+                    serviceItem1_4: "Ports to mobile platforms",
+                    serviceItem1_5: "Multiplayer and network integration",
+                    serviceTag2: "WEB",
+                    serviceTitle2: "Web development",
+                    serviceText2: "Creating modern web applications and sites of any complexity and functionality.",
+                    serviceItem2_1: "Business card websites and corporate portals",
+                    serviceItem2_2: "Online stores and marketplaces",
+                    serviceItem2_3: "Web applications of any complexity",
+                    serviceItem2_4: "Frontend and Backend development",
+                    serviceItem2_5: "API integrations and microservices",
+                    serviceTag3: "BOTS",
+                    serviceTitle3: "Automation and bots",
+                    serviceText3: "Development of intelligent bots and systems to optimize business processes.",
+                    serviceItem3_1: "Telegram bots with AI functionality",
+                    serviceItem3_2: "Data parsing and analytics",
+                    serviceItem3_3: "Chatbots for support and sales",
+                    serviceItem3_4: "Business process automation",
+                    serviceItem3_5: "Integration with external APIs",
+                    serviceTag4: "MORE",
+                    serviceTitle4: "And much more",
+                    serviceText4: "Full range of development services, including consultations and training.",
+                    serviceItem4_1: "Sale of created systems",
+                    serviceItem4_2: "Sale of libraries",
+                    serviceItem4_3: "Sale of games",
+                    serviceItem4_4: "Sale of artificial intelligence",
+                    serviceItem4_5: "Individual development training",
+                    serviceTag5: "OPENNESS",
+                    serviceTitle5: "Open architecture",
+                    serviceText5: "We will tell you how we write code, explain the logic and architecture of the solution.",
+                    serviceItem5_1: "Complete project documentation",
+                    serviceItem5_2: "Architecture explanation",
+                    serviceItem5_3: "Training your team",
+                    serviceItem5_4: "Code consultations",
+                    serviceItem5_5: "Support and development",
+                    serviceTag6: "FLEXIBILITY",
+                    serviceTitle6: "Adaptive flexibility",
+                    serviceText6: "Edits within 14 days after delivery, always ready for changes.",
+                    serviceItem6_1: "Free edits after launch",
+                    serviceItem6_2: "Readiness for scaling",
+                    serviceItem6_3: "Adaptation to new requirements",
+                    serviceItem6_4: "Flexible cooperation terms",
+                    serviceItem6_5: "Long-term support",
+                    approachTag: "Methodology",
+                    approachTitle: "Our approach",
+                    approachStep1: "Analysis",
+                    approachText1: "Careful analysis of requirements and planning of the solution architecture.",
+                    approachStep2: "Development",
+                    approachText2: "Professional code development following industry best practices.",
+                    approachStep3: "Testing",
+                    approachText3: "Comprehensive quality testing and search for all defects.",
+                    approachStep4: "Deployment",
+                    approachText4: "Safe deployment to hosting with minimal downtime.",
+                    approachStep5: "Support",
+                    approachText5: "Continuous technical support, updates and improvements.",
+                    approachStep6: "Documentation",
+                    approachText6: "Complete technical documentation for your full understanding.",
+                    valuesTag: "Values",
+                    valuesTitle: "Why we are better",
+                    valueName1: "Speed",
+                    valueDesc1: "Fast approval and order execution without compromising quality",
+                    valueName2: "Honesty",
+                    valueDesc2: "Transparent communication and never deceive our clients",
+                    valueName3: "Quality",
+                    valueDesc3: "Strict quality control at every stage of development",
+                    valueName4: "Flexibility",
+                    valueDesc4: "We adapt to requirements and are ready for changes",
+                    valueName5: "Openness",
+                    valueDesc5: "We explain architecture, share knowledge and experience",
+                    valueName6: "Partnership",
+                    valueDesc6: "Long-term cooperation and continuous support",
+                    footerTerms: "Privacy Policy",
+                },
+                zh: {
+                    headerSupport: "支援",
+                    navHome: "首页",
+                    navAbout: "关于我们",
+                    navOrders: "订单",
+                    navChat: "聊天",
+                    aboutTag: "关于我们",
+                    aboutTitle: "关于我们的工作室",
+                    aboutDescription: "PAT-STUDIO 是一支由专业人士组成的团队，专门从事任何复杂程度的IT解决方案开发。我们创建解决真实业务和用户问题的产品。",
+                    serviceTag1: "游戏",
+                    serviceTitle1: "游戏和游戏项目",
+                    serviceText1: "使用现代技术开发功能齐全的游戏和游戏应用程序。",
+                    serviceItem1_1: "在Roblox、Unity、Blender上进行游戏开发",
+                    serviceItem1_2: "2D/3D图形和动画",
+                    serviceItem1_3: "游戏逻辑和脚本编制",
+                    serviceItem1_4: "移植到移动平台",
+                    serviceItem1_5: "多人游戏和网络集成",
+                    serviceTag2: "网络",
+                    serviceTitle2: "网络开发",
+                    serviceText2: "创建现代网络应用程序和网站，任何复杂程度和功能。",
+                    serviceItem2_1: "商务卡网站和企业门户",
+                    serviceItem2_2: "在线商店和市场",
+                    serviceItem2_3: "任何复杂程度的网络应用程序",
+                    serviceItem2_4: "前端和后端开发",
+                    serviceItem2_5: "API集成和微服务",
+                    serviceTag3: "机器人",
+                    serviceTitle3: "自动化和机器人",
+                    serviceText3: "开发智能机器人和系统以优化业务流程。",
+                    serviceItem3_1: "具有AI功能的Telegram机器人",
+                    serviceItem3_2: "数据解析和分析",
+                    serviceItem3_3: "用于支持和销售的聊天机器人",
+                    serviceItem3_4: "业务流程自动化",
+                    serviceItem3_5: "与外部API的集成",
+                    serviceTag4: "更多",
+                    serviceTitle4: "还有更多",
+                    serviceText4: "完整的开发服务范围，包括咨询和培训。",
+                    serviceItem4_1: "出售创建的系统",
+                    serviceItem4_2: "出售库",
+                    serviceItem4_3: "销售游戏",
+                    serviceItem4_4: "出售人工智能",
+                    serviceItem4_5: "个人开发培训",
+                    serviceTag5: "开放性",
+                    serviceTitle5: "开放架构",
+                    serviceText5: "我们会告诉您我们如何编写代码，解释解决方案的逻辑和架构。",
+                    serviceItem5_1: "完整的项目文档",
+                    serviceItem5_2: "架构说明",
+                    serviceItem5_3: "培训您的团队",
+                    serviceItem5_4: "代码咨询",
+                    serviceItem5_5: "支持和开发",
+                    serviceTag6: "灵活性",
+                    serviceTitle6: "自适应灵活性",
+                    serviceText6: "交付后14天内可进行修改，始终准备好应对变化。",
+                    serviceItem6_1: "启动后免费编辑",
+                    serviceItem6_2: "扩展就绪",
+                    serviceItem6_3: "适应新要求",
+                    serviceItem6_4: "灵活的合作条件",
+                    serviceItem6_5: "长期支持",
+                    approachTag: "方法论",
+                    approachTitle: "我们的方法",
+                    approachStep1: "分析",
+                    approachText1: "仔细分析需求并规划解决方案架构。",
+                    approachStep2: "开发",
+                    approachText2: "按照行业最佳实践进行专业代码开发。",
+                    approachStep3: "测试",
+                    approachText3: "全面的质量测试和所有缺陷的搜索。",
+                    approachStep4: "部署",
+                    approachText4: "安全部署到主机，停机时间最少。",
+                    approachStep5: "支持",
+                    approachText5: "持续的技术支持、更新和改进。",
+                    approachStep6: "文档",
+                    approachText6: "完整的技术文档供您充分理解。",
+                    valuesTag: "价值观",
+                    valuesTitle: "我们为什么更好",
+                    valueName1: "速度",
+                    valueDesc1: "快速批准和订单执行，不损害质量",
+                    valueName2: "诚实",
+                    valueDesc2: "透明沟通，永不欺骗我们的客户",
+                    valueName3: "质量",
+                    valueDesc3: "开发的每个阶段严格质量控制",
+                    valueName4: "灵活性",
+                    valueDesc4: "我们适应要求并准备好应对变化",
+                    valueName5: "开放性",
+                    valueDesc5: "我们解释架构、分享知识和经验",
+                    valueName6: "合作伙伴关系",
+                    valueDesc6: "长期合作和持续支持",
+                    footerTerms: "隐私政策",
+                },
+                it: {
+                    headerSupport: "Supporto",
+                    navHome: "Home",
+                    navAbout: "Chi Siamo",
+                    navOrders: "Ordini",
+                    navChat: "Chat",
+                    aboutTag: "Chi Siamo",
+                    aboutTitle: "Chi siamo",
+                    aboutDescription: "PAT-STUDIO è un team di professionisti specializzati in soluzioni IT di qualsiasi complessità. Creiamo prodotti che risolvono problemi reali di business e utenti.",
+                    serviceTag1: "GIOCHI",
+                    serviceTitle1: "Giochi e progetti ludici",
+                    serviceText1: "Sviluppo di giochi completi e applicazioni di gioco utilizzando tecnologie moderne.",
+                    serviceItem1_1: "Sviluppo di giochi su Roblox, Unity, Blender",
+                    serviceItem1_2: "Grafica e animazione 2D/3D",
+                    serviceItem1_3: "Logica di gioco e scripting",
+                    serviceItem1_4: "Porting su piattaforme mobili",
+                    serviceItem1_5: "Multiplayer e integrazione di rete",
+                    serviceTag2: "WEB",
+                    serviceTitle2: "Sviluppo Web",
+                    serviceText2: "Creazione di moderne applicazioni web e siti di qualsiasi complessità e funzionalità.",
+                    serviceItem2_1: "Siti web biglietto da visita e portali aziendali",
+                    serviceItem2_2: "Negozi online e marketplace",
+                    serviceItem2_3: "Applicazioni web di qualsiasi complessità",
+                    serviceItem2_4: "Sviluppo Frontend e Backend",
+                    serviceItem2_5: "Integrazioni API e microservizi",
+                    serviceTag3: "BOT",
+                    serviceTitle3: "Automazione e bot",
+                    serviceText3: "Sviluppo di bot intelligenti e sistemi per ottimizzare i processi aziendali.",
+                    serviceItem3_1: "Bot Telegram con funzionalità AI",
+                    serviceItem3_2: "Parsing dei dati e analitiche",
+                    serviceItem3_3: "Chatbot per supporto e vendite",
+                    serviceItem3_4: "Automazione dei processi aziendali",
+                    serviceItem3_5: "Integrazione con API esterne",
+                    serviceTag4: "ALTRO",
+                    serviceTitle4: "E molto altro",
+                    serviceText4: "Gamma completa di servizi di sviluppo, incluse consulenze e formazione.",
+                    serviceItem4_1: "Vendita di sistemi creati",
+                    serviceItem4_2: "Vendita di librerie",
+                    serviceItem4_3: "Vendita di giochi",
+                    serviceItem4_4: "Vendita di intelligenza artificiale",
+                    serviceItem4_5: "Formazione individuale sullo sviluppo",
+                    serviceTag5: "APERTURA",
+                    serviceTitle5: "Architettura aperta",
+                    serviceText5: "Ti diremo come scriviamo il codice, spiegheremo la logica e l'architettura della soluzione.",
+                    serviceItem5_1: "Documentazione completa del progetto",
+                    serviceItem5_2: "Spiegazione dell'architettura",
+                    serviceItem5_3: "Formazione del tuo team",
+                    serviceItem5_4: "Consulenze sul codice",
+                    serviceItem5_5: "Supporto e sviluppo",
+                    serviceTag6: "FLESSIBILITÀ",
+                    serviceTitle6: "Flessibilità adattiva",
+                    serviceText6: "Modifiche entro 14 giorni dalla consegna, sempre pronti ai cambiamenti.",
+                    serviceItem6_1: "Modifiche gratuite dopo il lancio",
+                    serviceItem6_2: "Prontezza per il ridimensionamento",
+                    serviceItem6_3: "Adattamento ai nuovi requisiti",
+                    serviceItem6_4: "Termini di cooperazione flessibili",
+                    serviceItem6_5: "Supporto a lungo termine",
+                    approachTag: "Metodologia",
+                    approachTitle: "Il nostro approccio",
+                    approachStep1: "Analisi",
+                    approachText1: "Attenta analisi dei requisiti e pianificazione dell'architettura della soluzione.",
+                    approachStep2: "Sviluppo",
+                    approachText2: "Sviluppo professionale del codice secondo le migliori pratiche del settore.",
+                    approachStep3: "Test",
+                    approachText3: "Test completo della qualità e ricerca di tutti i difetti.",
+                    approachStep4: "Distribuzione",
+                    approachText4: "Distribuzione sicura su hosting con tempi di inattività minimi.",
+                    approachStep5: "Supporto",
+                    approachText5: "Supporto tecnico continuo, aggiornamenti e miglioramenti.",
+                    approachStep6: "Documentazione",
+                    approachText6: "Documentazione tecnica completa per la vostra piena comprensione.",
+                    valuesTag: "Valori",
+                    valuesTitle: "Perché siamo migliori",
+                    valueName1: "Velocità",
+                    valueDesc1: "Approvazione veloce ed esecuzione ordini senza compromessi sulla qualità",
+                    valueName2: "Onestà",
+                    valueDesc2: "Comunicazione trasparente e mai inganniamo i nostri clienti",
+                    valueName3: "Qualità",
+                    valueDesc3: "Controllo rigoroso della qualità in ogni fase dello sviluppo",
+                    valueName4: "Flessibilità",
+                    valueDesc4: "Ci adattiamo ai requisiti e siamo pronti ai cambiamenti",
+                    valueName5: "Apertura",
+                    valueDesc5: "Spieghiamo l'architettura, condividiamo conoscenze ed esperienza",
+                    valueName6: "Partnership",
+                    valueDesc6: "Cooperazione a lungo termine e supporto continuo",
+                    footerTerms: "Informativa sulla privacy",
+                },
+                ar: {
+                    headerSupport: "الدعم",
+                    navHome: "الرئيسية",
+                    navAbout: "من نحن",
+                    navOrders: "الطلبات",
+                    navChat: "الدردشة",
+                    aboutTag: "من نحن",
+                    aboutTitle: "حول استوديونا",
+                    aboutDescription: "PAT-STUDIO هي فريق من المحترفين متخصصون في حلول تكنولوجيا المعلومات بأي تعقيد. نحن ننشئ منتجات تحل مشاكل العمل والمستخدمين الحقيقية.",
+                    serviceTag1: "الألعاب",
+                    serviceTitle1: "الألعاب والمشاريع الألعاب",
+                    serviceText1: "تطوير الألعاب الكاملة وتطبيقات الألعاب باستخدام التقنيات الحديثة.",
+                    serviceItem1_1: "تطوير الألعاب على Roblox و Unity و Blender",
+                    serviceItem1_2: "رسومات وحركات ثنائية وثلاثية الأبعاد",
+                    serviceItem1_3: "منطق اللعبة والبرمجة",
+                    serviceItem1_4: "نقل إلى منصات الهاتف المحمول",
+                    serviceItem1_5: "متعدد اللاعبين وتكامل الشبكة",
+                    serviceTag2: "ويب",
+                    serviceTitle2: "تطوير الويب",
+                    serviceText2: "إنشاء تطبيقات ويب ومواقع حديثة بأي تعقيد وأداء.",
+                    serviceItem2_1: "مواقع بطاقات الأعمال والبوابات الشركات",
+                    serviceItem2_2: "المتاجر عبر الإنترنت والأسواق",
+                    serviceItem2_3: "تطبيقات الويب لأي درجة من التعقيد",
+                    serviceItem2_4: "تطوير Frontend و Backend",
+                    serviceItem2_5: "تكاملات API والخدمات الدقيقة",
+                    serviceTag3: "الروبوتات",
+                    serviceTitle3: "الأتمتة والروبوتات",
+                    serviceText3: "تطوير الروبوتات الذكية والأنظمة لتحسين العمليات التجارية.",
+                    serviceItem3_1: "روبوتات Telegram مع وظائف الذكاء الاصطناعي",
+                    serviceItem3_2: "تحليل البيانات والتحليلات",
+                    serviceItem3_3: "الروبوتات الدردشة للدعم والمبيعات",
+                    serviceItem3_4: "أتمتة العمليات التجارية",
+                    serviceItem3_5: "التكامل مع واجهات برمجة التطبيقات الخارجية",
+                    serviceTag4: "المزيد",
+                    serviceTitle4: "والكثير أيضا",
+                    serviceText4: "نطاق كامل من خدمات التطوير، بما في ذلك الاستشارات والتدريب.",
+                    serviceItem4_1: "بيع الأنظمة المُنشأة",
+                    serviceItem4_2: "بيع المكتبات",
+                    serviceItem4_3: "بيع الألعاب",
+                    serviceItem4_4: "بيع الذكاء الاصطناعي",
+                    serviceItem4_5: "التدريب الفردي على التطوير",
+                    serviceTag5: "الشفافية",
+                    serviceTitle5: "الهندسة المعمارية المفتوحة",
+                    serviceText5: "سنخبرك بكيفية كتابة الأكواد، وشرح منطق وهندسة الحل.",
+                    serviceItem5_1: "وثائق المشروع الكاملة",
+                    serviceItem5_2: "شرح العمارة",
+                    serviceItem5_3: "تدريب فريقك",
+                    serviceItem5_4: "استشارات الأكواد",
+                    serviceItem5_5: "الدعم والتطوير",
+                    serviceTag6: "المرونة",
+                    serviceTitle6: "المرونة التكيفية",
+                    serviceText6: "تعديلات خلال 14 يومًا بعد التسليم، دائمًا مستعدون للتغييرات.",
+                    serviceItem6_1: "تعديلات مجانية بعد الإطلاق",
+                    serviceItem6_2: "الجاهزية للتوسع",
+                    serviceItem6_3: "التكيف مع المتطلبات الجديدة",
+                    serviceItem6_4: "شروط تعاون مرنة",
+                    serviceItem6_5: "الدعم على المدى الطويل",
+                    approachTag: "المنهجية",
+                    approachTitle: "نهجنا",
+                    approachStep1: "التحليل",
+                    approachText1: "تحليل دقيق للمتطلبات وتخطيط معمارية الحل.",
+                    approachStep2: "التطوير",
+                    approachText2: "تطوير احترافي للأكواد وفقاً لأفضل الممارسات في الصناعة.",
+                    approachStep3: "الاختبار",
+                    approachText3: "اختبار شامل للجودة والبحث عن جميع الأخطاء.",
+                    approachStep4: "النشر",
+                    approachText4: "نشر آمن على الخادم مع أقل وقت تعطل.",
+                    approachStep5: "الدعم",
+                    approachText5: "دعم تقني مستمر وتحديثات وتحسينات.",
+                    approachStep6: "التوثيق",
+                    approachText6: "وثائق تقنية كاملة لفهمك الكامل.",
+                    valuesTag: "القيم",
+                    valuesTitle: "لماذا نحن أفضل",
+                    valueName1: "السرعة",
+                    valueDesc1: "موافقة سريعة وتنفيذ فوري للطلبات دون المساس بالجودة",
+                    valueName2: "الصدق",
+                    valueDesc2: "تواصل شفاف وعدم خداع عملائنا أبدا",
+                    valueName3: "الجودة",
+                    valueDesc3: "مراقبة صارمة للجودة في كل مرحلة من مراحل التطوير",
+                    valueName4: "المرونة",
+                    valueDesc4: "نحن نتكيف مع المتطلبات ومستعدون للتغييرات",
+                    valueName5: "الشفافية",
+                    valueDesc5: "نشرح البنية المعمارية ونشارك المعرفة والخبرة",
+                    valueName6: "الشراكة",
+                    valueDesc6: "تعاون طويل الأجل والدعم المستمر",
+                    footerTerms: "سياسة الخصوصية",
+                }
+            },
+
+            init() {
+                this.setupTheme();
+                this.setupLanguage();
+                this.setupScrollAnimations();
+            },
+
+            setupTheme() {
+                const savedTheme = localStorage.getItem('pat_theme') || 'light';
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            },
+
+            toggleTheme() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('pat_theme', newTheme);
+            },
+
+            setupLanguage() {
+                const savedLang = localStorage.getItem('pat_lang') || 'ru';
+                document.getElementById('langSelect').value = savedLang;
+                this.changeLanguage(savedLang);
+            },
+
+            changeLanguage(lang) {
+                document.documentElement.lang = lang;
+                localStorage.setItem('pat_lang', lang);
+
+                if (lang === 'ar') {
+                    document.body.classList.add('rtl');
+                } else {
+                    document.body.classList.remove('rtl');
+                }
+
+                document.querySelectorAll('[data-key]').forEach(element => {
+                    const key = element.getAttribute('data-key');
+                    if (this.translations[lang] && this.translations[lang][key]) {
+                        element.textContent = this.translations[lang][key];
+                    }
+                });
+            },
+
+            setupScrollAnimations() {
+                const observerOptions = {
+                    root: null,
+                    rootMargin: '0px',
+                    threshold: 0.15
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('active');
+                        }
+                    });
+                }, observerOptions);
+
+                document.querySelectorAll('.reveal, .service-card').forEach(el => {
+                    observer.observe(el);
+                });
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            AppEngine.init();
+        });
+
+        function toggleLangMenu(event) {
+            event.stopPropagation();
+            document.getElementById('customLangWidget').classList.toggle('open');
+        }
+
+        function selectLanguage(langCode, langName) {
+            const realSelect = document.getElementById('langSelect');
+            if (realSelect) {
+                realSelect.value = langCode;
+            }
+
+            document.getElementById('currentLangText').textContent = langName;
+            if (typeof AppEngine !== 'undefined' && AppEngine.changeLanguage) {
+                AppEngine.changeLanguage(langCode);
             }
         }
 
-        function changeLanguage(lang) {
-            const languageSelect = document.getElementById('languageSelect');
-            languageSelect.value = lang;
-            document.documentElement.lang = lang;
-            document.title = (lang === 'ru') ? 'Информация | PAT-STUDIO' : 'Information | PAT-STUDIO';
+        document.addEventListener('click', () => {
+            const widget = document.getElementById('customLangWidget');
+            if (widget) widget.classList.remove('open');
+            const openMenu = document.querySelector('.lang-wrapper.open');
+            if (openMenu) openMenu.classList.remove('open');
+        });
 
-            const elements = document.querySelectorAll('[data-ru][data-en]');
-            elements.forEach(function(el) {
-                const text = el.getAttribute('data-' + lang);
-                if (el.querySelector('strong')) {
-                    const parts = text.split('PAT-STUDIO');
-                    el.innerHTML = '<strong>PAT-STUDIO</strong>' + (parts[1] || text);
-                } else {
-                    el.textContent = text;
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const savedLang = localStorage.getItem('pat_lang') || 'ru';
+                const langMap = {
+                    'ru': 'Русский',
+                    'en': 'English',
+                    'zh': '中文',
+                    'it': 'Italiano',
+                    'ar': 'العربية'
+                };
+                if (langMap[savedLang]) {
+                    document.getElementById('currentLangText').textContent = langMap[savedLang];
                 }
-            });
-            localStorage.setItem('language', lang);
-        }
-
-        function handleScroll() {
-            const items = document.querySelectorAll('.reason-item, .approach-box');
-            items.forEach(function(item) {
-                const rect = item.getBoundingClientRect();
-                if (rect.top < window.innerHeight - 30) {
-                    item.classList.add('visible');
-                }
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            toggleTheme(savedTheme === 'dark');
-            const savedLang = localStorage.getItem('language') || 'ru';
-            changeLanguage(savedLang);
-            document.getElementById('themeSwitch').addEventListener('change', function() {
-                toggleTheme(this.checked);
-            });
-            document.getElementById('languageSelect').addEventListener('change', function() {
-                changeLanguage(this.value);
-            });
-            window.addEventListener('scroll', handleScroll);
-            handleScroll();
+            }, 100);
         });
     </script>
-</body>
-</html>
+
+
+<script>
+
+    if (window.location.pathname.endsWith('about.html')) {
+        const cleanPath = window.location.pathname.replace('about.html', 'about');
+        window.history.replaceState(null, '', cleanPath);
+    } else if (window.location.pathname.endsWith('/') || window.location.pathname === '') {
+        window.history.replaceState(null, '', window.location.pathname + 'about');
+    }
+
+</script>
+
+    </body>
+    </html>
