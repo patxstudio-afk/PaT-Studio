@@ -1,519 +1,1220 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Заказы | PAT-STUDIO</title>
+    <title>Orders | PAT-STUDIO</title>
     <style>
+        /*СИС*/
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f5f7;
+            --text-primary: #000000;
+            --text-secondary: #6e6e73;
+            --border-color: #e5e5e5;
+            --badge-bg: #000000;
+            --badge-text: #ffffff;
+            --accent-gold: #d4af37;
+            --font-samsung: "SamsungOne", "Inter", -apple-system, sans-serif;
+            --transition-smooth: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            --transition-fast: all 0.2s ease;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #000000;
+            --bg-secondary: #0b0b0c;
+            --text-primary: #ffffff;
+            --text-secondary: #86868b;
+            --border-color: #1a1a1a;
+            --badge-bg: #ffffff;
+            --badge-text: #000000;
+        }
+
+        /* --- БАЗОВЫЕ СТИЛИ --- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            outline: none;
         }
 
         body {
-            font-family: Arial, sans-serif;
-            background-color: rgb(255, 255, 255);
-            color: rgb(0, 0, 0);
-            line-height: 1.6;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            font-family: "SamsungOne", "Inter", "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            line-height: 1.5;
         }
 
-        body.dark-theme {
-            background-color: rgb(18, 18, 18);
-            color: rgb(224, 224, 224);
+        body.rtl {
+            direction: rtl;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+        /* --- СКРОЛЛБАР --- */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
         }
 
+        /* --- ТЕКСТОВЫЕ СТИЛИ И АНИМАЦИИ ВЫЯВЛЕНИЯ --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: var(--transition-smooth);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- ШАПКА САЙТА (HEADER) --- */
         .header {
-            background-color: rgb(255, 255, 255);
-            padding: 20px 0;
-            border-bottom: 1px solid rgb(238, 238, 238);
-            position: sticky;
+            position: fixed;
             top: 0;
+            left: 0;
+            width: 100%;
+            height: 56px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            transition: border-color 0.5s ease;
         }
 
-        body.dark-theme .header {
-            background-color: rgb(26, 26, 26);
-            border-bottom: 1px solid rgb(51, 51, 51);
+        [data-theme="dark"] .header {
+            background: rgba(0, 0, 0, 0.7);
         }
 
-        .header-content {
+        .header-container {
+            width: 100%;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .menu {
+        .logo-zone {
             display: flex;
-            gap: 40px;
+            align-items: center;
+            gap: 48px;
+        }
+
+        .logo {
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: opacity 0.2s;
+        }
+
+        .logo:hover {
+            opacity: 0.7;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 32px;
             list-style: none;
         }
 
-        .menu-item {
+        .nav-link {
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            color: var(--text-secondary);
+            transition: var(--transition-fast);
             position: relative;
         }
 
-        .menu-item a {
-            text-decoration: none;
-            color: rgb(51, 51, 51);
-            font-size: 18px;
-            padding: 10px 5px;
-            transition: color 0.3s ease;
+        .nav-link:hover {
+            color: var(--text-primary);
         }
 
-        body.dark-theme .menu-item a {
-            color: rgb(224, 224, 224);
-        }
-
-        .menu-item.active a {
-            color: rgb(0, 136, 204);
-        }
-
-        .menu-item.active::after {
+        .nav-link.active::after {
             content: '';
             position: absolute;
-            bottom: -5px;
+            bottom: -8px;
             left: 0;
             right: 0;
-            height: 3px;
-            background-color: rgb(0, 136, 204);
+            height: 2px;
+            background: var(--accent-gold);
         }
 
-        .controls {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .toggle-container {
+        .controls-zone {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 24px;
         }
 
-        .toggle-label {
-            font-size: 14px;
-            color: rgb(102, 102, 102);
+        .header-support {
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            color: #000000;
+            transition: opacity 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            margin-left: 20px;
         }
 
-        body.dark-theme .toggle-label {
-            color: rgb(170, 170, 170);
+        .header-support:hover {
+            opacity: 0.7;
         }
 
-        .theme-toggle {
+        [data-theme="dark"] .header-support {
+            color: #ffffff;
+        }
+
+        @media (max-width: 600px) {
+            .header-support {
+                font-size: 12px;
+                margin-left: 12px;
+            }
+        }
+
+        /* --- СТИЛИ ДЛЯ КАСТОМНОГО ПЕРЕКЛЮЧАТЕЛЯ ЯЗЫКОВ --- */
+
+        .lang-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 26px;
-        }
-
-        .theme-toggle input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .toggle-slider {
-            position: absolute;
+            padding: 8px 14px;
+            border-radius: 50px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            transition: background-color 0.2s ease, border-color 0.2s ease;
             cursor: pointer;
-            top: 0;
-            left: 0;
+            user-select: none;
+        }
+
+        .lang-wrapper:hover {
+            background: var(--border-color);
+        }
+
+        .lang-icon {
+            width: 16px;
+            height: 16px;
+            stroke: var(--text-secondary);
+            transition: stroke 0.2s ease;
+        }
+
+        .lang-wrapper:hover .lang-icon {
+            stroke: var(--text-primary);
+        }
+
+        .lang-current {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-family: "SamsungOne", "Inter", "Helvetica Neue", Arial, sans-serif;
+        }
+
+        .lang-arrow {
+            stroke: var(--text-secondary);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.2s ease;
+        }
+
+        .lang-wrapper.open .lang-arrow {
+            transform: rotate(180deg);
+            stroke: var(--text-primary);
+        }
+
+        .lang-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
             right: 0;
-            bottom: 0;
-            background-color: rgb(204, 204, 204);
-            transition: 0.4s;
-            border-radius: 34px;
-        }
-
-        .toggle-slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 4px;
-            bottom: 4px;
-            background-color: rgb(255, 255, 255);
-            transition: 0.4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .toggle-slider {
-            background-color: rgb(0, 136, 204);
-        }
-
-        input:checked + .toggle-slider:before {
-            transform: translateX(24px);
-        }
-
-        .lang-select {
-            padding: 6px 12px;
-            border: 1px solid rgb(0, 136, 204);
-            background-color: rgb(255, 255, 255);
-            color: rgb(0, 136, 204);
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-
-        body.dark-theme .lang-select {
-            background-color: rgb(45, 45, 45);
-            color: rgb(0, 136, 204);
-        }
-
-        .studio-header {
-            text-align: center;
-            padding: 60px 0 40px;
-            background: linear-gradient(to bottom, rgb(248, 249, 250), rgb(255, 255, 255));
-        }
-
-        body.dark-theme .studio-header {
-            background: linear-gradient(to bottom, rgb(30, 30, 30), rgb(18, 18, 18));
-        }
-
-        .studio-name {
-            font-size: 48px;
-            color: rgb(0, 136, 204);
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .reasons-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 40px;
-            margin-bottom: 60px;
-        }
-
-        .reason-item {
-            text-align: center;
-            padding: 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 6px;
+            min-width: 130px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             opacity: 0;
-            transform: translateY(60px);
-            transition: opacity 0.25s ease-out, transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            pointer-events: none;
+            transform: translateY(-10px);
+            transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1100;
         }
 
-        .reason-item.visible {
+        .lang-wrapper.open .lang-dropdown {
             opacity: 1;
+            pointer-events: auto;
             transform: translateY(0);
         }
 
-        .reason-item:hover {
-            transform: translateY(-5px) scale(1.02);
-            transition: transform 0.3s ease;
+        .lang-option {
+            padding: 8px 12px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+            border-radius: 10px;
+            font-family: "SamsungOne", "Inter", "Helvetica Neue", Arial, sans-serif;
+            transition: background-color 0.2s ease;
+            text-align: left;
+            cursor: pointer;
         }
 
-        .reason-video {
-            width: 200px;
-            height: 200px;
-            object-fit: cover;
-            margin: 0 auto 15px;
-            border-radius: 8px;
+        body.rtl .lang-option {
+            text-align: right;
+        }
+
+        .lang-option:hover {
+            background: var(--border-color);
+        }
+
+        .theme-toggle-btn {
+            background: none;
+            border: none;
+            padding: 8px;
+            margin-left: 10px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50px;
+            transition: background-color 0.2s ease;
+        }
+
+        .theme-toggle-btn:hover {
+            background: var(--border-color);
+        }
+
+        .theme-icon {
+            width: 18px;
+            height: 18px;
+            display: block;
+            filter: brightness(0) opacity(0.6);
+            transition: filter 0.2s ease, opacity 0.2s ease;
+        }
+
+        [data-theme="dark"] .theme-icon {
+            filter: brightness(0) invert(1) opacity(0.6);
+        }
+
+        [data-theme="dark"] .theme-toggle-btn:hover .theme-icon {
+            filter: brightness(0) invert(1) opacity(1);
+        }
+
+        .theme-toggle-btn:hover .theme-icon {
+            filter: brightness(0) opacity(1);
+        }
+
+        /* --- ОСНОВНОЙ КОНТЕНТ --- */
+        .main-content {
+            padding-top: 56px;
+            background: var(--bg-primary);
+        }
+
+        /* --- ЗАГОЛОВОК СЕКЦИИ --- */
+        .section-header {
+            padding: 120px 40px 80px;
+            max-width: 1440px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .section-tag {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
             display: block;
         }
 
-        .reason-title {
-            font-size: 22px;
-            color: rgb(0, 136, 204);
-            margin-bottom: 10px;
-            font-weight: bold;
+        .section-main-title {
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            color: var(--text-primary);
+            margin-bottom: 20px;
         }
 
-        .reason-text {
-            font-size: 16px;
-            color: rgb(102, 102, 102);
+        .section-subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 900px;
+            margin: 0 auto;
             line-height: 1.6;
-            text-align: center;
         }
 
-        body.dark-theme .reason-text {
-            color: rgb(170, 170, 170);
+        /* --- СЕТКА ЗАКАЗОВ --- */
+        .orders-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 40px 120px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
         }
 
-        .reason-list {
-            list-style: none;
-            margin-top: 10px;
-            display: inline-block;
-            text-align: left;
-        }
-
-        .reason-list li {
+        .order-card {
+            background: var(--bg-secondary);
+            border-radius: 28px;
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            min-height: 480px;
+            overflow: hidden;
             position: relative;
-            padding-left: 20px;
-            margin-bottom: 8px;
+            transition: transform 0.5s ease, background-color 0.5s ease;
+            border: 1px solid var(--border-color);
         }
 
-        .reason-list li::before {
-            content: "•";
-            color: rgb(0, 136, 204);
+        .order-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-gold);
+        }
+
+        .order-tag {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+            color: var(--accent-gold);
+            display: inline-block;
+        }
+
+        .order-title {
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 24px;
+            letter-spacing: -0.5px;
+            color: var(--text-primary);
+        }
+
+        .order-text {
+            font-size: 16px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .order-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .order-list li {
+            font-size: 15px;
+            color: var(--text-secondary);
+            padding-left: 24px;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .order-list li::before {
+            content: "→";
+            color: var(--accent-gold);
             position: absolute;
             left: 0;
             font-weight: bold;
-        }
-
-        .approach-box {
-            padding: 40px 0;
-            margin-top: 40px;
-            text-align: center;
-            opacity: 0;
-            transform: translateY(50px);
-            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
-        }
-
-        .approach-box.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .footer {
-            background-color: rgb(248, 249, 250);
-            padding: 40px 0;
-            text-align: center;
-            border-top: 1px solid rgb(238, 238, 238);
-            margin-top: 60px;
-        }
-
-        body.dark-theme .footer {
-            background-color: rgb(26, 26, 26);
-            border-top: 1px solid rgb(51, 51, 51);
-        }
-
-        .footer-logo {
             font-size: 18px;
-            font-weight: bold;
-            color: rgb(0, 136, 204);
-            margin-bottom: 10px;
+        }
+
+        /* --- СЕКЦИЯ ВАЖНЫХ ВОПРОСОВ  --- */
+            .important-section {
+                background: var(--bg-primary);
+                padding: 120px 40px;
+            }
+
+            .important-wrapper {
+                max-width: 1440px;
+                margin: 0 auto;
+            }
+
+            .important-header {
+                margin-bottom: 80px;
+                text-align: center;
+            }
+
+            .important-tag {
+                font-size: 14px;
+                font-weight: 700;
+                color: var(--accent-gold);
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                margin-bottom: 12px;
+                display: block;
+            }
+
+            .important-title {
+                font-size: 44px;
+                font-weight: 700;
+                color: var(--text-primary);
+                letter-spacing: -1px;
+            }
+
+            .important-content {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 32px;
+            }
+
+            .important-card {
+                background: var(--bg-secondary);
+                border-radius: 28px;
+                padding: 48px;
+                border: none;
+                position: relative;
+                overflow: hidden;
+                transition: transform 0.5s ease, background-color 0.5s ease;
+                text-align: left;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .important-card:hover {
+                transform: translateY(-6px);
+            }
+
+            .important-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 4px;
+                background: transparent;
+                transition: background 0.3s ease;
+            }
+
+            .important-card:hover::before {
+                background: var(--accent-gold);
+            }
+
+            .important-card-title {
+                font-size: 24px;
+                font-weight: 700;
+                color: var(--text-primary);
+                margin-bottom: 16px;
+                letter-spacing: -0.5px;
+                line-height: 1.3;
+            }
+
+            .important-text {
+                font-size: 16px;
+                color: var(--text-secondary);
+                line-height: 1.6;
+            }
+
+            @media (max-width: 1024px) {
+                .important-content {
+                    grid-template-columns: 1fr;
+                }
+                .important-card {
+                    padding: 32px;
+                }
+            }
+
+        /* --- МИНИМАЛИСТИЧНЫЙ КОМПАКТНЫЙ ФУТЕР --- */
+        .footer {
+            background: var(--bg-primary);
+            border-top: 1px solid var(--border-color);
+            padding: 32px 40px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            transition: background-color 0.5s ease, border-color 0.5s ease;
+        }
+
+        .footer-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
         }
 
         .footer-copyright {
-            font-size: 14px;
-            color: rgb(136, 136, 136);
-            margin-top: 20px;
+            font-weight: 400;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 16px;
+            list-style: none;
+        }
+
+        .footer-link-item a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+
+        .footer-link-item a:hover {
+            color: var(--text-primary);
+            text-decoration: underline;
+        }
+
+        .footer-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .footer-tg {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer-tg:hover {
+            text-decoration: underline;
+        }
+
+        /* --- АДАПТИВНОСТЬ --- */
+        @media (max-width: 1024px) {
+            .orders-container {
+                grid-template-columns: 1fr;
+                padding: 0 40px 80px;
+            }
+            .order-card {
+                padding: 40px;
+                min-height: auto;
+            }
+            .section-main-title {
+                font-size: 36px;
+            }
         }
 
         @media (max-width: 768px) {
-            .header-content {
+            .header-container {
+                padding: 0 20px;
+            }
+            .nav-menu {
+                display: none;
+            }
+            .section-header {
+                padding: 80px 20px 60px;
+            }
+            .orders-container {
+                padding: 0 20px 80px;
+                gap: 24px;
+            }
+            .order-card {
+                padding: 40px;
+            }
+            .important-section {
+                padding: 80px 20px;
+            }
+            .section-main-title {
+                font-size: 32px;
+            }
+            .footer-container {
                 flex-direction: column;
-                gap: 20px;
+                align-items: flex-start;
+                gap: 16px;
             }
-            .reasons-grid {
-                grid-template-columns: 1fr;
+            .order-list li::before {
+                left: 0;
             }
-            .menu {
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 20px;
+            .order-text {
+                max-width: 100%;
             }
         }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="container">
-            <div class="header-content">
-                <ul class="menu">
-                    <li class="menu-item">
-                        <a href="index.html" data-ru="главная" data-en="home">главная</a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="about.html" data-ru="информация" data-en="about">информация</a>
-                    </li>
-                    <li class="menu-item active">
-                        <a href="orders.html" data-ru="заказы" data-en="orders">заказы</a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="chat.html" data-ru="чат" data-en="chat">чат</a>
-                    </li>
-                </ul>
-                <div class="controls">
-                    <div class="toggle-container">
-                        <span class="toggle-label" data-ru="Тема" data-en="Theme">Тема</span>
-                        <label class="theme-toggle">
-                            <input type="checkbox" id="themeSwitch">
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                    <select class="lang-select" id="languageSelect">
+    <!-- ШАПКА САЙТА -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo-zone">
+                <a href="index.html" class="logo">PAT-STUDIO</a>
+                <nav>
+                    <ul class="nav-menu">
+                        <li><a href="index.html" class="nav-link" data-key="navHome">Главная</a></li>
+                        <li><a href="about.html" class="nav-link" data-key="navAbout">Информация</a></li>
+                        <li><a href="orders.html" class="nav-link active" data-key="navOrders">Заказы</a></li>
+                        <li><a href="chat.html" class="nav-link" data-key="navChat">Чат</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <div class="controls-zone">
+                <div class="lang-wrapper" id="customLangWidget" onclick="toggleLangMenu(event)">
+                    <svg class="lang-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                    <span class="lang-current" id="currentLangText">Русский</span>
+                    <svg class="lang-arrow" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+
+                    <select id="langSelect" style="display: none;" onchange="AppEngine.changeLanguage(this.value)">
                         <option value="ru">Русский</option>
                         <option value="en">English</option>
+                        <option value="zh">中文</option>
+                        <option value="it">Italiano</option>
+                        <option value="ar">العربية</option>
                     </select>
+
+                    <div class="lang-dropdown" id="langDropdownMenu">
+                        <div class="lang-option" onclick="selectLanguage('ru', 'Русский')">Русский</div>
+                        <div class="lang-option" onclick="selectLanguage('en', 'English')">English</div>
+                        <div class="lang-option" onclick="selectLanguage('zh', '中文')">中文</div>
+                        <div class="lang-option" onclick="selectLanguage('it', 'Italiano')">Italiano</div>
+                        <div class="lang-option" onclick="selectLanguage('ar', 'العربية')">العربية</div>
+                    </div>
                 </div>
+
+                <button class="theme-toggle-btn" onclick="AppEngine.toggleTheme()" aria-label="Toggle Theme">
+                    <img src="theme.png" class="theme-icon" alt="Theme">
+                </button>
+                <a href="https://t.me/PaT_Support" target="_blank" class="header-support" data-key="headerSupport">Support</a>
             </div>
         </div>
-    </div>
+    </header>
 
-    <div class="studio-header">
-        <div class="container">
-            <h1 class="studio-name" data-ru="Заказы" data-en="Orders">Заказы</h1>
-            <p class="reason-text" style="max-width: 900px; margin: 0 auto;"
-               data-ru="Здесь вы можете узнать, как заказать разработку вашего проекта, ознакомиться с нашими гарантиями и этапами работы."
-               data-en="Here you can find out how to order the development of your project, get acquainted with our guarantees and work stages.">
-                Здесь вы можете узнать, как заказать разработку вашего проекта, ознакомиться с нашими гарантиями и этапами работы.
-            </p>
+    <!-- ОСНОВНОЙ КОНТЕНТ -->
+    <main class="main-content">
+        <!-- ЗАГОЛОВОК СЕКЦИИ -->
+        <div class="section-header reveal">
+            <span class="section-tag" data-key="ordersTag">Заказы</span>
+            <h1 class="section-main-title" data-key="ordersTitle">Как сделать заказ</h1>
+            <p class="section-subtitle" data-key="ordersDescription">Здесь вы можете узнать, как заказать разработку вашего проекта, ознакомиться с нашими гарантиями и этапами работы.</p>
         </div>
-    </div>
 
-    <div class="container">
-        <div class="reasons-grid">
-
-            <div class="reason-item">
-                <video class="reason-video" autoplay muted loop playsinline>
-                    <source src="image/oforderDuck.mp4" type="video/mp4">
-                </video>
-                <div class="reason-title" data-ru="Как сделать заказ" data-en="How to place an order">Как сделать заказ</div>
-                <div class="reason-text" data-ru="1. Через бота @OrderPaTBot" data-en="1. Via @OrderPaTBot bot">1. Через бота @OrderPaTBot</div>
-                <ul class="reason-list">
-                    <li data-ru="Тип проекта" data-en="Project type">Тип проекта</li>
-                    <li data-ru="Цели и задачи" data-en="Goals and objectives">Цели и задачи</li>
-                    <li data-ru="Желаемые сроки" data-en="Desired deadlines">Желаемые сроки</li>
-                    <li data-ru="Примерный бюджет" data-en="Approximate budget">Примерный бюджет</li>
+        <!-- СЕТКА ЗАКАЗОВ -->
+        <div class="orders-container">
+            <!-- Карточка 1 -->
+            <div class="order-card reveal">
+                <span class="order-tag" data-key="orderTag1">ОФОРМЛЕНИЕ</span>
+                <h3 class="order-title" data-key="orderTitle1">Как сделать заказ</h3>
+                <p class="order-text" data-key="orderText1">Оформить заказ очень просто. Свяжитесь с нами через бота или напрямую с основателем.</p>
+                <ul class="order-list">
+                    <li data-key="orderItem1_1">Через бота @OrderPaTBot</li>
+                    <li data-key="orderItem1_2">Типи проекта</li>
+                    <li data-key="orderItem1_3">Цели и задачи</li>
+                    <li data-key="orderItem1_4">Желаемые сроки</li>
+                    <li data-key="orderItem1_5">Примерный бюджет</li>
                 </ul>
             </div>
 
-            <div class="reason-item">
-                <video class="reason-video" autoplay muted loop playsinline>
-                    <source src="image/POlorderDuck.mp4" type="video/mp4">
-                </video>
-                <div class="reason-title" data-ru="Наши гарантии" data-en="Our guarantees">Наши гарантии</div>
-                <ul class="reason-list">
-                    <li data-ru="14 дней бесплатных правок" data-en="14 days of free edits">14 дней бесплатных правок</li>
-                    <li data-ru="Полная техническая документация" data-en="Full technical documentation">Полная техническая документация</li>
-                    <li data-ru="Обучение работе с системой" data-en="System usage training">Обучение работе с системой</li>
-                    <li data-ru="Техподдержка 3 месяца бесплатно" data-en="3 months free tech support">Техподдержка 3 месяца бесплатно</li>
+            <!-- Карточка 2 -->
+            <div class="order-card reveal">
+                <span class="order-tag" data-key="orderTag2">ГАРАНТИИ</span>
+                <h3 class="order-title" data-key="orderTitle2">Наши гарантии</h3>
+                <p class="order-text" data-key="orderText2">Мы гарантируем качество и полную поддержку на всех этапах разработки.</p>
+                <ul class="order-list">
+                    <li data-key="orderItem2_1">14 дней бесплатных правок</li>
+                    <li data-key="orderItem2_2">Полная техническая документация</li>
+                    <li data-key="orderItem2_3">Обучение работе с системой</li>
+                    <li data-key="orderItem2_4">Техподдержка 3 месяца бесплатно</li>
+                    <li data-key="orderItem2_5">Полная гарантия качества</li>
                 </ul>
             </div>
 
-            <div class="reason-item">
-                <video class="reason-video" autoplay muted loop playsinline>
-                    <source src="image/chtopolucDuck.mp4" type="video/mp4">
-                </video>
-                <div class="reason-title" data-ru="Что вы получаете" data-en="What you get">Что вы получаете</div>
-                <ul class="reason-list">
-                    <li data-ru="Исходный код проекта" data-en="Project source code">Исходный код проекта</li>
-                    <li data-ru="Все необходимые инструкции" data-en="All necessary instructions">Все необходимые инструкции</li>
-                    <li data-ru="Готовый к запуску продукт" data-en="Ready-to-launch product">Готовый к запуску продукт</li>
-                    <li data-ru="Гарантию качества от PAT-STUDIO" data-en="Quality guarantee from PAT-STUDIO">Гарантию качества от PAT-STUDIO</li>
+            <!-- Карточка 3 -->
+            <div class="order-card reveal">
+                <span class="order-tag" data-key="orderTag3">ПОЛУЧЕНИЕ</span>
+                <h3 class="order-title" data-key="orderTitle3">Что вы получаете</h3>
+                <p class="order-text" data-key="orderText3">После завершения проекта вы получите полный пакет с исходными кодами и документацией.</p>
+                <ul class="order-list">
+                    <li data-key="orderItem3_1">Исходный код проекта</li>
+                    <li data-key="orderItem3_2">Все необходимые инструкции</li>
+                    <li data-key="orderItem3_3">Готовый к запуску продукт</li>
+                    <li data-key="orderItem3_4">Гарантию качества от PAT-STUDIO</li>
+                    <li data-key="orderItem3_5">Пожизненную поддержку сообщества</li>
                 </ul>
             </div>
 
-            <div class="reason-item">
-                <video class="reason-video" autoplay muted loop playsinline>
-                    <source src="image/contactDuck.mp4" type="video/mp4">
-                </video>
-                <div class="reason-title" data-ru="Связь с нами" data-en="Contact us">Связь с нами</div>
-                <ul class="reason-list">
-                    <li data-ru="Бот заказов: @OrderPaTBot" data-en="Order bot: @OrderPaTBot">Бот заказов: @OrderPaTBot</li>
-                    <li data-ru="Основатель: @PaTaTyuchik" data-en="Founder: @PaTaTyuchik">Основатель: @PaTaTyuchik</li>
-                    <li data-ru="Ответ в течение 1-2 часов" data-en="Response within 1-2 hours">Ответ в течение 1-2 часов</li>
-                    <li data-ru="Работаем по всему миру" data-en="Working worldwide">Работаем по всему миру</li>
+            <!-- Карточка 4 -->
+            <div class="order-card reveal">
+                <span class="order-tag" data-key="orderTag4">КОНТАКТЫ</span>
+                <h3 class="order-title" data-key="orderTitle4">Связь с нами</h3>
+                <p class="order-text" data-key="orderText4">Мы всегда на связи и готовы ответить на все ваши вопросы.</p>
+                <ul class="order-list">
+                    <li data-key="orderItem4_1">Бот заказов: @OrderPaTBot</li>
+                    <li data-key="orderItem4_2">Основатель: @PaTaTyuchik</li>
+                    <li data-key="orderItem4_3">Ответ в течение 1-2 часов</li>
+                    <li data-key="orderItem4_4">Работаем по всему миру</li>
+                    <li data-key="orderItem4_5">24/7 доступность</li>
                 </ul>
             </div>
-
         </div>
 
-        <div class="approach-box">
-            <h2 class="reason-title" data-ru="Важные вопросы" data-en="Important questions">Важные вопросы</h2>
-            <p class="reason-text" data-ru="Мы ценим каждого клиента и гарантируем индивидуальный подход к вашему проекту."
-               data-en="We value every customer and guarantee an individual approach to your project.">
-                Мы ценим каждого клиента и гарантируем индивидуальный подход к вашему проекту.
-            </p>
-            <p class="reason-text" style="margin-top: 15px;"
-               data-ru="Оплата производится в зависимости от услуги/проекта может быть до или после."
-               data-en="Payment is made depending on the service/project and can be before or after.">
-                Оплата производится в зависимости от услуги/проекта может быть до или после.
-            </p>
-            <p class="reason-text" style="margin-top: 15px;"
-               data-ru="Обращайтесь — мы всегда рады обсудить ваши идеи и превратить их в реальность!"
-               data-en="Contact us — we are always happy to discuss your ideas and turn them into reality!">
-                Обращайтесь — мы всегда рады обсудить ваши идеи и превратить их в реальность!
-            </p>
+    <!-- СЕКЦИЯ ВАЖНЫХ ВОПРОСОВ -->
+    <section class="important-section">
+        <div class="important-wrapper">
+
+        <div class="important-header reveal">
+            <span class="important-tag" data-key="importantTag">FAQ</span>
+            <h2 class="important-title" data-key="importantTitle">Часто задаваемые вопросы</h2>
+        </div>
+        <div class="important-content">
+            <div class="important-card reveal">
+                <h3 class="important-card-title" data-key="importantCardTitle1">Как происходит оплата (Чаще всего)?</h3>
+                <p class="important-text" data-key="importantCardText1">
+                    Мы работаем по системе поэтапной оплаты. Вы вносите предоплату, после чего мы начинаем разработку. Оставшаяся часть оплачивается только после полного утверждения проекта.
+                </p>
+            </div>
+
+            <div class="important-card reveal">
+                <h3 class="important-card-title" data-key="importantCardTitle2">Что если мне не понравится дизайн?</h3>
+                <p class="important-text" data-key="importantCardText2">
+                    Мы проводим глубокий бриф перед началом работы. Кроме того, в стоимость включены бесплатные правки на этапе согласования дизайн-концепции, чтобы результат на 100% соответствовал ожиданиям.
+                </p>
+            </div>
+
+            <div class="important-card reveal">
+                <h3 class="important-card-title" data-key="importantCardTitle3">Вы даете гарантию на код?</h3>
+                <p class="important-text" data-key="importantCardText3">
+                    Да, мы предоставляем 14 дней бесплатной технической поддержки и исправления любых скрытых багов после финальной сдачи проекта заказчику.
+                </p>
+            </div>
+
+            <div class="important-card reveal">
+                <h3 class="important-card-title" data-key="importantCardTitle4">Могу ли я сам вносить изменения?</h3>
+                <p class="important-text" data-key="importantCardText4">
+                    Мы используем гибкую архитектуру. Вы получите подробную документацию, которая позволит вам или вашей команде легко масштабировать проект в будущем.
+                </p>
+            </div>
         </div>
     </div>
+</section>
 
-    <div class="footer">
-        <div class="container">
-            <div class="footer-logo">PAT-STUDIO</div>
-            <p class="reason-text" data-ru="PAT-STUDIO это компания по разработке IT функциональности" data-en="PAT-STUDIO is a company for developing IT functionality">
-                PAT-STUDIO это компания по разработке IT функциональности
-            </p>
-            <div class="footer-copyright" data-ru="© 2026 PAT-STUDIO. Все права защищены." data-en="© 2026 PAT-STUDIO. All rights reserved.">
-                © 2026 PAT-STUDIO. Все права защищены.
+    <!-- НИЖНИЙ БАР -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-left">
+                <span class="footer-copyright">Copyright © 2024-2026 PAT-STUDIO. All Rights Reserved.</span>
+                <ul class="footer-links">
+                    <li class="footer-link-item"><a href="/license.html" data-key="footerTerms">Политика конфиденциальности</a></li>
+                </ul>
+            </div>
+            <div class="footer-right">
+                <a href="https://t.me/Studio_Patx" target="_blank" class="footer-tg">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12.003 21.144c-4.832 0-8.991-3.614-9.664-8.384l-.008-.073c-.76-5.41 3.018-10.273 8.428-11.033 5.41-.76 10.273 3.018 11.033 8.428.718 5.112-2.617 9.805-7.697 10.91l-.147.03c-.636.126-1.288.193-1.945.193zm-1.573-7.536l.247 3.513c.354 0 .506-.163.69-.34l1.636-1.574 3.394 2.503c.623.344 1.07.167 1.226-.575l2.224-10.48c.227-.91-.346-1.32-.942-1.052L6.151 12.04c-.883.22-.873.714-.155.935l3.328 1.04 7.712-4.866c.363-.22.696-.102.424.14l-6.248 5.64-.176-.328z"/></svg>
+                    T.me/Studio_Patx
+                </a>
             </div>
         </div>
-    </div>
+    </footer>
 
+    <!-- СИСТЕМНЫЕ СКРИПТЫ, АНИМАЦИИ И ПЕРЕВОДЫ -->
     <script>
-        function toggleTheme(isDark) {
-            const body = document.body;
-            const themeSwitch = document.getElementById('themeSwitch');
-            if (isDark) {
-                body.classList.add('dark-theme');
-                themeSwitch.checked = true;
-                localStorage.setItem('theme', 'dark');
-            } else {
-                body.classList.remove('dark-theme');
-                themeSwitch.checked = false;
-                localStorage.setItem('theme', 'light');
-            }
-        }
-
-        function changeLanguage(lang) {
-            const languageSelect = document.getElementById('languageSelect');
-            languageSelect.value = lang;
-            document.documentElement.lang = lang;
-
-            if (lang === 'ru') {
-                document.title = 'Заказы | PAT-STUDIO';
-            } else {
-                document.title = 'Orders | PAT-STUDIO';
-            }
-
-            const elements = document.querySelectorAll('[data-ru][data-en]');
-            elements.forEach(function(el) {
-                const text = el.getAttribute('data-' + lang);
-                el.textContent = text;
-            });
-            localStorage.setItem('language', lang);
-        }
-
-        function handleScroll() {
-            const items = document.querySelectorAll('.reason-item, .approach-box');
-            items.forEach(function(item) {
-                const rect = item.getBoundingClientRect();
-                const windowHeight = window.innerHeight;
-                if (rect.top < windowHeight - 30) {
-                    item.classList.add('visible');
+        const AppEngine = {
+            translations: {
+                ru: {
+                    headerSupport: "Поддержка",
+                    navHome: "Главная",
+                    navAbout: "Информация",
+                    navOrders: "Заказы",
+                    navChat: "Чат",
+                    ordersTag: "Заказы",
+                    ordersTitle: "Как сделать заказ",
+                    ordersDescription: "Здесь вы можете узнать, как заказать разработку вашего проекта, ознакомиться с нашими гарантиями и этапами работы.",
+                    orderTag1: "ОФОРМЛЕНИЕ",
+                    orderTitle1: "Как сделать заказ",
+                    orderText1: "Оформить заказ очень просто. Свяжитесь с нами через бота или напрямую с основателем.",
+                    orderItem1_1: "Через бота @OrderPaTBot",
+                    orderItem1_2: "Тип проекта",
+                    orderItem1_3: "Цели и задачи",
+                    orderItem1_4: "Желаемые сроки",
+                    orderItem1_5: "Примерный бюджет",
+                    orderTag2: "ГАРАНТИИ",
+                    orderTitle2: "Наши гарантии",
+                    orderText2: "Мы гарантируем качество и полную поддержку на всех этапах разработки.",
+                    orderItem2_1: "14 дней бесплатных правок",
+                    orderItem2_2: "Полная техническая документация",
+                    orderItem2_3: "Обучение работе с системой",
+                    orderItem2_4: "Техподдержка 3 месяца бесплатно",
+                    orderItem2_5: "Полная гарантия качества",
+                    orderTag3: "ПОЛУЧЕНИЕ",
+                    orderTitle3: "Что вы получаете",
+                    orderText3: "После завершения проекта вы получите полный пакет с исходными кодами и документацией.",
+                    orderItem3_1: "Исходный код проекта",
+                    orderItem3_2: "Все необходимые инструкции",
+                    orderItem3_3: "Готовый к запуску продукт",
+                    orderItem3_4: "Гарантию качества от PAT-STUDIO",
+                    orderItem3_5: "Пожизненную поддержку сообщества",
+                    orderTag4: "КОНТАКТЫ",
+                    orderTitle4: "Связь с нами",
+                    orderText4: "Мы всегда на связи и готовы ответить на все ваши вопросы.",
+                    orderItem4_1: "Бот заказов: @OrderPaTBot",
+                    orderItem4_2: "Основатель: @PaTaTyuchik",
+                    orderItem4_3: "Ответ в течение 1-2 часов",
+                    orderItem4_4: "Работаем по всему миру",
+                    orderItem4_5: "24/7 доступность",
+                    importantTag: "FAQ",
+                    importantTitle: "Часто задаваемые вопросы",
+                    importantCardTitle1: "Как происходит оплата?",
+                    importantCardText1: "Мы работаем по системе поэтапной оплаты. Вы вносите предоплату, после чего мы начинаем разработку. Оставшаяся часть оплачивается только после полного утверждения проекта.",
+                    importantCardTitle2: "Что если мне не понравится дизайн?",
+                    importantCardText2: "Мы проводим глубокий бриф перед началом работы. Кроме того, в стоимость включены бесплатные правки на этапе согласования дизайн-концепции, чтобы результат на 100% соответствовал ожиданиям.",
+                    importantCardTitle3: "Вы даете гарантию на код?",
+                    importantCardText3: "Да, мы предоставляем 14 дней бесплатной технической поддержки и исправления любых скрытых багов после финальной сдачи проекта заказчику.",
+                    importantCardTitle4: "Могу ли я сам вносить изменения?",
+                    importantCardText4: "Мы используем гибкую архитектуру. Вы получите подробную документацию, которая позволит вам или вашей команде легко масштабировать проект в будущем.",
+                    footerTerms: "Политика конфендациальности",
+                },
+                en: {
+                    headerSupport: "Support",
+                    navHome: "Home",
+                    navAbout: "About",
+                    navOrders: "Orders",
+                    navChat: "Chat",
+                    ordersTag: "Orders",
+                    ordersTitle: "How to place an order",
+                    ordersDescription: "Here you can find out how to order the development of your project, get acquainted with our guarantees and work stages.",
+                    orderTag1: "PLACEMENT",
+                    orderTitle1: "How to place an order",
+                    orderText1: "Placing an order is very simple. Contact us via bot or directly with the founder.",
+                    orderItem1_1: "Via bot @OrderPaTBot",
+                    orderItem1_2: "Project type",
+                    orderItem1_3: "Goals and objectives",
+                    orderItem1_4: "Desired deadlines",
+                    orderItem1_5: "Approximate budget",
+                    orderTag2: "GUARANTEES",
+                    orderTitle2: "Our guarantees",
+                    orderText2: "We guarantee quality and full support at all stages of development.",
+                    orderItem2_1: "14 days of free edits",
+                    orderItem2_2: "Full technical documentation",
+                    orderItem2_3: "System usage training",
+                    orderItem2_4: "3 months free tech support",
+                    orderItem2_5: "Full quality guarantee",
+                    orderTag3: "RECEIVING",
+                    orderTitle3: "What you get",
+                    orderText3: "After project completion, you will receive a complete package with source codes and documentation.",
+                    orderItem3_1: "Project source code",
+                    orderItem3_2: "All necessary instructions",
+                    orderItem3_3: "Ready-to-launch product",
+                    orderItem3_4: "Quality guarantee from PAT-STUDIO",
+                    orderItem3_5: "Lifetime community support",
+                    orderTag4: "CONTACTS",
+                    orderTitle4: "Contact us",
+                    orderText4: "We are always available and ready to answer all your questions.",
+                    orderItem4_1: "Order bot: @OrderPaTBot",
+                    orderItem4_2: "Founder: @PaTaTyuchik",
+                    orderItem4_3: "Response within 1-2 hours",
+                    orderItem4_4: "Working worldwide",
+                    orderItem4_5: "24/7 availability",
+                    importantTag: "FAQ",
+                    importantTitle: "Frequently Asked Questions",
+                    importantCardTitle1: "How does the payment process work?",
+                    importantCardText1: "We operate on a milestone-based payment system. You make an advance payment, and then we begin development. The remaining balance is paid only after full approval of the project.",
+                    importantCardTitle2: "What if I don't like the design?",
+                    importantCardText2: "We conduct a deep brief before starting work. In addition, the cost includes free revisions at the design concept approval stage to ensure the result matches your expectations 100%.",
+                    importantCardTitle3: "Do you provide a warranty for the code?",
+                    importantCardText3: "Yes, we provide 14 days of free technical support and bug fixes for any hidden issues after the final delivery of the project to the client.",
+                    importantCardTitle4: "Can I make changes myself?",
+                    importantCardText4: "We use a flexible architecture. You will receive detailed documentation that will allow you or your team to easily scale the project in the future.",
+                    footerTerms: "Privacy Policy",
+                },
+                zh: {
+                    headerSupport: "支援",
+                    navHome: "首页",
+                    navAbout: "关于我们",
+                    navOrders: "订单",
+                    navChat: "聊天",
+                    ordersTag: "订单",
+                    ordersTitle: "如何下单",
+                    ordersDescription: "在这里，您可以了解如何订购项目开发，了解我们的保证和工作阶段。",
+                    orderTag1: "下单",
+                    orderTitle1: "如何下单",
+                    orderText1: "下单非常简单。通过机器人或直接与创始人联系我们。",
+                    orderItem1_1: "通过机器人 @OrderPaTBot",
+                    orderItem1_2: "项目类型",
+                    orderItem1_3: "目标和目的",
+                    orderItem1_4: "期望的截止日期",
+                    orderItem1_5: "大概预算",
+                    orderTag2: "保证",
+                    orderTitle2: "我们的保证",
+                    orderText2: "我们保证质量和在开发的所有阶段提供全面支持。",
+                    orderItem2_1: "14 天免费编辑",
+                    orderItem2_2: "完整的技术文档",
+                    orderItem2_3: "系统使用培训",
+                    orderItem2_4: "3 个月免费技术支持",
+                    orderItem2_5: "完整质量保证",
+                    orderTag3: "接收",
+                    orderTitle3: "你得到什么",
+                    orderText3: "项目完成后，您将收到包含源代码和文档的完整包。",
+                    orderItem3_1: "项目源代码",
+                    orderItem3_2: "所有必要的说明",
+                    orderItem3_3: "即用型产品",
+                    orderItem3_4: "PAT-STUDIO 质量保证",
+                    orderItem3_5: "终身社区支持",
+                    orderTag4: "联系方式",
+                    orderTitle4: "联系我们",
+                    orderText4: "我们始终可用，准备回答您的所有问题。",
+                    orderItem4_1: "订单机器人: @OrderPaTBot",
+                    orderItem4_2: "创始人: @PaTaTyuchik",
+                    orderItem4_3: "1-2小时内响应",
+                    orderItem4_4: "全球工作",
+                    orderItem4_5: "24/7 可用性",
+                    importantTag: "FAQ",
+                    importantTitle: "常见问题",
+                    importantCardTitle1: "付款流程是怎样的？",
+                    importantCardText1: "我们采用分阶段付款的方式。您先支付预付款，随后我们开始开发。剩余款项仅在项目完全通过验收后支付。",
+                    importantCardTitle2: "如果我不喜欢设计怎么办？",
+                    importantCardText2: "我们在开工前会进行深度沟通。此外，费用中已包含设计概念确认阶段的免费修改服务，以确保最终结果100%符合您的预期。",
+                    importantCardTitle3: "你们对代码提供保修吗？",
+                    importantCardText3: "是的，在项目最终交付后，我们为客户提供14天的免费技术支持和潜在漏洞修复服务。",
+                    importantCardTitle4: "我可以自己进行修改吗？",
+                    importantCardText4: "我们采用灵活的架构。您将获得详细的文档说明，方便您或您的团队在未来轻松扩展项目。",
+                    footerTerms: "隐私政策",
+                },
+                it: {
+                    headerSupport: "Supporto",
+                    navHome: "Home",
+                    navAbout: "Chi Siamo",
+                    navOrders: "Ordini",
+                    navChat: "Chat",
+                    ordersTag: "Ordini",
+                    ordersTitle: "Come effettuare un ordine",
+                    ordersDescription: "Qui puoi scoprire come ordinare lo sviluppo del tuo progetto, familiarizzare con le nostre garanzie e i nostri processi di lavoro.",
+                    orderTag1: "INSERIMENTO",
+                    orderTitle1: "Come effettuare un ordine",
+                    orderText1: "Effettuare un ordine è molto semplice. Contattaci tramite bot o direttamente con il fondatore.",
+                    orderItem1_1: "Via bot @OrderPaTBot",
+                    orderItem1_2: "Tipo di progetto",
+                    orderItem1_3: "Obiettivi e compiti",
+                    orderItem1_4: "Scadenze desiderate",
+                    orderItem1_5: "Budget approssimativo",
+                    orderTag2: "GARANZIE",
+                    orderTitle2: "Le nostre garanzie",
+                    orderText2: "Garantiamo qualità e pieno supporto in tutte le fasi dello sviluppo.",
+                    orderItem2_1: "14 giorni di modifiche gratuite",
+                    orderItem2_2: "Documentazione tecnica completa",
+                    orderItem2_3: "Formazione sull'utilizzo del sistema",
+                    orderItem2_4: "3 mesi di supporto tecnico gratuito",
+                    orderItem2_5: "Garanzia di qualità completa",
+                    orderTag3: "RICEZIONE",
+                    orderTitle3: "Cosa ottieni",
+                    orderText3: "Al completamento del progetto, riceverai un pacchetto completo con codici sorgente e documentazione.",
+                    orderItem3_1: "Codice sorgente del progetto",
+                    orderItem3_2: "Tutte le istruzioni necessarie",
+                    orderItem3_3: "Prodotto pronto al lancio",
+                    orderItem3_4: "Garanzia di qualità da PAT-STUDIO",
+                    orderItem3_5: "Supporto comunitario a vita",
+                    orderTag4: "CONTATTI",
+                    orderTitle4: "Contattaci",
+                    orderText4: "Siamo sempre disponibili e pronti a rispondere a tutte le tue domande.",
+                    orderItem4_1: "Bot ordini: @OrderPaTBot",
+                    orderItem4_2: "Fondatore: @PaTaTyuchik",
+                    orderItem4_3: "Risposta entro 1-2 ore",
+                    orderItem4_4: "Operativi a livello mondiale",
+                    orderItem4_5: "Disponibilità 24/7",
+                    importantTag: "FAQ",
+                    importantTitle: "Domande Frequenti",
+                    importantCardTitle1: "Come funziona il pagamento?",
+                    importantCardText1: "Collaboriamo con un sistema di pagamento a scaglioni. Si effettua un acconto, dopodiché avviamo lo sviluppo. Il saldo rimanente viene corrisposto solo dopo l'approvazione completa del progetto.",
+                    importantCardTitle2: "E se il design non dovesse piacermi?",
+                    importantCardText2: "Svolgiamo un brief approfondito prima di iniziare i lavori. Inoltre, il prezzo include modifiche gratuite durante la fase di approvazione del concetto grafico, per garantire che il risultato finale rispecchi al 100% le tue aspettative.",
+                    importantCardTitle3: "Fornite una garanzia sul codice?",
+                    importantCardText3: "Sì, forniamo 14 giorni di assistenza tecnica gratuita e correzione di eventuali bug nascosti dopo la consegna finale del progetto al cliente.",
+                    importantCardTitle4: "Posso apportare modifiche da solo?",
+                    importantCardText4: "Utilizziamo un'architettura flessibile. Riceverai una documentazione dettagliata che permetterà a te o al tuo team di scalare facilmente il progetto in futuro.",
+                    footerTerms: "Informativa sulla privacy",
+                },
+                ar: {
+                    headerSupport: "الدعم",
+                    navHome: "الرئيسية",
+                    navAbout: "من نحن",
+                    navOrders: "الطلبات",
+                    navChat: "الدردشة",
+                    ordersTag: "الطلبات",
+                    ordersTitle: "كيفية تقديم طلب",
+                    ordersDescription: "هنا يمكنك معرفة كيفية طلب تطوير مشروعك والتعرف على ضماناتنا ومراحل العمل.",
+                    orderTag1: "التقديم",
+                    orderTitle1: "كيفية تقديم طلب",
+                    orderText1: "تقديم الطلب بسيط جداً. تواصل معنا عبر الروبوت أو مباشرة مع المؤسس.",
+                    orderItem1_1: "عبر الروبوت @OrderPaTBot",
+                    orderItem1_2: "نوع المشروع",
+                    orderItem1_3: "الأهداف والمهام",
+                    orderItem1_4: "الفترات الزمنية المرغوبة",
+                    orderItem1_5: "الميزانية التقريبية",
+                    orderTag2: "الضمانات",
+                    orderTitle2: "ضماناتنا",
+                    orderText2: "نحن نضمن الجودة والدعم الكامل في جميع مراحل التطوير.",
+                    orderItem2_1: "14 يومًا من التعديلات المجانية",
+                    orderItem2_2: "الوثائق التقنية الكاملة",
+                    orderItem2_3: "تدريب على استخدام النظام",
+                    orderItem2_4: "3 أشهر من الدعم الفني المجاني",
+                    orderItem2_5: "ضمان الجودة الكامل",
+                    orderTag3: "الاستقبال",
+                    orderTitle3: "ما تحصل عليه",
+                    orderText3: "بعد اكتمال المشروع، ستتلقى حزمة كاملة مع رموز المصدر والوثائق.",
+                    orderItem3_1: "كود مصدر المشروع",
+                    orderItem3_2: "جميع التعليمات الضرورية",
+                    orderItem3_3: "منتج جاهز للإطلاق",
+                    orderItem3_4: "ضمان الجودة من PAT-STUDIO",
+                    orderItem3_5: "دعم المجتمع مدى الحياة",
+                    orderTag4: "جهات الاتصال",
+                    orderTitle4: "اتصل بنا",
+                    orderText4: "نحن متاحون دائماً وجاهزون للإجابة على جميع أسئلتك.",
+                    orderItem4_1: "روبوت الطلبات: @OrderPaTBot",
+                    orderItem4_2: "المؤسس: @PaTaTyuchik",
+                    orderItem4_3: "الرد خلال 1-2 ساعة",
+                    orderItem4_4: "العمل في جميع أنحاء العالم",
+                    orderItem4_5: "توفر 24/7",
+                    importantTag: "FAQ",
+                    importantTitle: "الأسئلة الشائعة",
+                    importantCardTitle1: "كيف تتم عملية الدفع؟",
+                    importantCardText1: "نحن نعمل بنظام الدفع على مراحل. تقوم بدفع مقدم، ومن ثم نبدأ في التطوير. ويتم دفع المبلغ المتبقي فقط بعد الموافقة الكاملة على المشروع.",
+                    importantCardTitle2: "ماذا لو لم يعجبني التصميم؟",
+                    importantCardText2: "نحن نجري مناقشة تفصيلية عميقة قبل بدء العمل. بالإضافة إلى ذلك، تشتمل التكلفة على تعديلات مجانية في مرحلة الموافقة على مفهوم التصميم، لضمان تطابق النتيجة بنسبة 100% مع توقعاتك.",
+                    importantCardTitle3: "هل تقدمون ضمانًا على الكود؟",
+                    importantCardText3: "نعم، نحن نقدم 14 يومًا من الدعم الفني المجاني وإصلاح أي أخطاء برمجية خفية بعد التسليم النهائي للمشروع إلى العميل.",
+                    importantCardTitle4: "هل يمكنني إجراء التغييرات بنفسي؟",
+                    importantCardText4: "نحن نعتمد بنية برمجية مرنة. ستحصل على وثائق ومستندات تفصيلية تتيح لك أو لفريقك توسيع نطاق المشروع وتطويره بسهولة في المستقبل.",
+                    footerTerms: "سياسة الخصوصية",
                 }
-            });
+            },
+
+            init() {
+                this.setupTheme();
+                this.setupLanguage();
+                this.setupScrollAnimations();
+            },
+
+            setupTheme() {
+                const savedTheme = localStorage.getItem('pat_theme') || 'light';
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            },
+
+            toggleTheme() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('pat_theme', newTheme);
+            },
+
+            setupLanguage() {
+                const savedLang = localStorage.getItem('pat_lang') || 'ru';
+                document.getElementById('langSelect').value = savedLang;
+                this.changeLanguage(savedLang);
+            },
+
+            changeLanguage(lang) {
+                document.documentElement.lang = lang;
+                localStorage.setItem('pat_lang', lang);
+
+                if (lang === 'ar') {
+                    document.body.classList.add('rtl');
+                } else {
+                    document.body.classList.remove('rtl');
+                }
+
+                document.querySelectorAll('[data-key]').forEach(element => {
+                    const key = element.getAttribute('data-key');
+                    if (this.translations[lang] && this.translations[lang][key]) {
+                        element.textContent = this.translations[lang][key];
+                    }
+                });
+            },
+
+            setupScrollAnimations() {
+                const observerOptions = {
+                    root: null,
+                    rootMargin: '0px',
+                    threshold: 0.15
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('active');
+                        }
+                    });
+                }, observerOptions);
+
+                document.querySelectorAll('.reveal').forEach(el => {
+                    observer.observe(el);
+                });
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            AppEngine.init();
+        });
+
+        function toggleLangMenu(event) {
+            event.stopPropagation();
+            document.getElementById('customLangWidget').classList.toggle('open');
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            toggleTheme(savedTheme === 'dark');
+        function selectLanguage(langCode, langName) {
+            const realSelect = document.getElementById('langSelect');
+            if (realSelect) {
+                realSelect.value = langCode;
+            }
 
-            const savedLang = localStorage.getItem('language') || 'ru';
-            changeLanguage(savedLang);
+            document.getElementById('currentLangText').textContent = langName;
+            if (typeof AppEngine !== 'undefined' && AppEngine.changeLanguage) {
+                AppEngine.changeLanguage(langCode);
+            }
+        }
 
-            document.getElementById('themeSwitch').addEventListener('change', function() {
-                toggleTheme(this.checked);
-            });
+        document.addEventListener('click', () => {
+            const widget = document.getElementById('customLangWidget');
+            if (widget) widget.classList.remove('open');
+            const openMenu = document.querySelector('.lang-wrapper.open');
+            if (openMenu) openMenu.classList.remove('open');
+        });
 
-            document.getElementById('languageSelect').addEventListener('change', function() {
-                changeLanguage(this.value);
-            });
-
-            window.addEventListener('scroll', handleScroll);
-            handleScroll();
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const savedLang = localStorage.getItem('pat_lang') || 'ru';
+                const langMap = {
+                    'ru': 'Русский',
+                    'en': 'English',
+                    'zh': '中文',
+                    'it': 'Italiano',
+                    'ar': 'العربية'
+                };
+                if (langMap[savedLang]) {
+                    document.getElementById('currentLangText').textContent = langMap[savedLang];
+                }
+            }, 100);
         });
     </script>
-</body>
+
+
+<script>
+    
+    if (window.location.pathname.endsWith('orders.html')) {
+        const cleanPath = window.location.pathname.replace('orders.html', 'orders');
+        window.history.replaceState(null, '', cleanPath);
+    } else if (window.location.pathname.endsWith('/') || window.location.pathname === '') {
+        window.history.replaceState(null, '', window.location.pathname + 'orders');
+    }
+
+</script>
+    </body>
 </html>
