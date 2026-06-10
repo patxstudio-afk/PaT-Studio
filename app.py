@@ -23,8 +23,10 @@ def find_file_case_insensitive(path):
         f"{path.lower()}.html"
     ]
     
+    seen = set()
     for candidate in candidates:
-        if candidate != path or candidate != path.lower():  # Skip duplicates
+        if candidate not in seen:
+            seen.add(candidate)
             if os.path.isfile(candidate):
                 return candidate
     
@@ -41,36 +43,45 @@ class AntiCacheHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         request_path = self.path.split('?')[0].strip('/')
         
+        # Handle root and home - serve index.html
         if request_path in ('', 'home'):
             final_path = 'index.html'
         else:
+            # Try to find the requested file
             final_path = find_file_case_insensitive(request_path)
             
-        if not final_path or not os.path.isfile(final_path):
-            if os.path.isfile('404.html'):
-                try:
-                    with open('404.html', 'rb') as f:
-                        content = f.read()
-                    
-                    pos = content.find(b'</head>')
-                    if pos != -1:
-                        body = content[:pos] + JS_BYPASS + content[pos:]
-                    else:
-                        body = JS_BYPASS + content
-                    
-                    self.send_response(404)
-                    self.send_header('Content-Type', 'text/html; charset=utf-8')
-                    self.send_header('Content-Length', len(body))
-                    self.end_headers()
-                    self.wfile.write(body)
-                    return
-                except Exception as e:
+            # If file not found, serve 404
+            if not final_path or not os.path.isfile(final_path):
+                if os.path.isfile('404.html'):
+                    try:
+                        with open('404.html', 'rb') as f:
+                            content = f.read()
+                        
+                        pos = content.find(b'</head>')
+                        if pos != -1:
+                            body = content[:pos] + JS_BYPASS + content[pos:]
+                        else:
+                            body = JS_BYPASS + content
+                        
+                        self.send_response(404)
+                        self.send_header('Content-Type', 'text/html; charset=utf-8')
+                        self.send_header('Content-Length', len(body))
+                        self.end_headers()
+                        self.wfile.write(body)
+                        return
+                    except Exception as e:
+                        self.send_error(404)
+                        return
+                else:
                     self.send_error(404)
                     return
-            else:
-                self.send_error(404)
-                return
 
+        # Verify file exists
+        if not os.path.isfile(final_path):
+            self.send_error(404)
+            return
+
+        # Serve HTML files with cache-busting script
         if final_path.endswith('.html'):
             try:
                 with open(final_path, 'rb') as f:
@@ -91,7 +102,8 @@ class AntiCacheHandler(http.server.SimpleHTTPRequestHandler):
             except Exception as e:
                 self.send_error(500)
                 return
-    
+        
+        # Non-HTML files return 404
         self.send_error(404)
 
 if __name__ == '__main__':
