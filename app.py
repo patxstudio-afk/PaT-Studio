@@ -1,4 +1,4 @@
-import http.server, socketserver, os
+import http.server, socketserver, os, glob
 
 PORT = 8000
 JS_BYPASS = b"""<script>
@@ -14,6 +14,25 @@ if(l!==sessionStorage.getItem('_l')){sessionStorage.setItem('_l',l);location.rel
 const _f=window.fetch;window.fetch=(u,o)=>{if(typeof u==='string')u+=(u.includes('?')?'&':'?')+'t='+Date.now();return _f(u,o)};
 </script>"""
 
+def find_file_case_insensitive(path):
+    if os.path.exists(path):
+        return path
+    
+    path_lower = path.lower()
+    if path_lower != path and os.path.exists(path_lower):
+        return path_lower
+    
+    if not path_lower.endswith('.html'):
+        path_with_html = path + '.html'
+        if os.path.exists(path_with_html):
+            return path_with_html
+        
+        path_lower_with_html = path_lower + '.html'
+        if path_lower_with_html != path_with_html and os.path.exists(path_lower_with_html):
+            return path_lower_with_html
+    
+    return None
+
 class AntiCacheHandler(http.server.SimpleHTTPRequestHandler):
     def end_headers(self):
         self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
@@ -22,65 +41,42 @@ class AntiCacheHandler(http.server.SimpleHTTPRequestHandler):
         self.send_header('Clear-Site-Data', '"cache"')
         super().end_headers()
 
-    def find_file(self, path):
-        if os.path.exists(path):
-            return path
-        
-        path_lower = path.lower()
-        if os.path.exists(path_lower):
-            return path_lower
-        
-        if not path_lower.endswith('.html'):
-            path_html_lower = path_lower + '.html'
-            if os.path.exists(path_html_lower):
-                return path_html_lower
-            
-            path_html = path + '.html'
-            if os.path.exists(path_html):
-                return path_html
-        
-        return None
-
     def do_GET(self):
-        clean_path = self.path.split('?')[0].strip('/')
+        request_path = self.path.split('?')[0].strip('/')
         
-        if clean_path in ('', 'home'):
-            self.path = '/index.html'
+        if request_path in ('', 'home'):
+            final_path = 'index.html'
         else:
-            found = self.find_file(clean_path)
-            if found:
-                self.path = '/' + found
-            else:
-                alt_html_lower = clean_path.lower() + '.html'
-                if os.path.exists(alt_html_lower):
-                    self.path = '/' + alt_html_lower
-                else:
-                    self.path = '/index.html'
+            final_path = find_file_case_insensitive(request_path)
+            
+            if not final_path:
+                final_path = 'index.html'
 
-        local_path = self.path.lstrip('/')
-        if not os.path.exists(local_path):
-            local_path_lower = local_path.lower()
-            if os.path.exists(local_path_lower):
-                local_path = local_path_lower
-            else:
-                self.path = '/404.html' if os.path.exists('404.html') else '/index.html'
-                local_path = self.path.lstrip('/')
+        if not os.path.exists(final_path):
+            final_path = '404.html' if os.path.exists('404.html') else 'index.html'
 
-        if local_path.endswith('.html') and os.path.exists(local_path):
+        if final_path.endswith('.html') and os.path.exists(final_path):
             try:
-                with open(local_path, 'rb') as f:
+                with open(final_path, 'rb') as f:
                     content = f.read()
+                
                 pos = content.find(b'</head>')
-                body = content[:pos] + JS_BYPASS + content[pos:] if pos != -1 else JS_BYPASS + content
+                if pos != -1:
+                    body = content[:pos] + JS_BYPASS + content[pos:]
+                else:
+                    body = JS_BYPASS + content
+                
                 self.send_response(200)
                 self.send_header('Content-Type', 'text/html; charset=utf-8')
+                self.send_header('Content-Length', len(body))
                 self.end_headers()
                 self.wfile.write(body)
                 return
-            except:
-                pass
-        
-        return super().do_GET()
+            except Exception as e:
+                self.send_error(500)
+                return
+
+        self.send_error(404)
 
 if __name__ == '__main__':
     socketserver.TCPServer.allow_reuse_address = True
