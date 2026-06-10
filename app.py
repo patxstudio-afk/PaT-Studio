@@ -24,11 +24,24 @@ class AntiCacheHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_GET(self):
         clean_path = self.path.split('?')[0].strip('/')
+        
         if clean_path in ('', 'home'):
             self.path = '/index.html'
-        elif not os.path.exists(clean_path):
-            alt = clean_path + '.html'
-            self.path = '/' + alt if os.path.exists(alt) else '/index.html'
+        else:
+            alt_html = clean_path + '.html'
+            
+            if os.path.exists(clean_path):
+                pass
+            elif os.path.exists(alt_html):
+                self.path = '/' + alt_html
+            else:
+                if not clean_path.endswith('.html'):
+                    if os.path.exists('index.html'):
+                        self.path = '/index.html'
+                    else:
+                        self.path = '/404.html'
+                else:
+                    self.path = '/404.html'
 
         local_path = self.path.lstrip('/')
         if not os.path.exists(local_path):
@@ -37,7 +50,8 @@ class AntiCacheHandler(http.server.SimpleHTTPRequestHandler):
 
         if local_path.endswith('.html') and os.path.exists(local_path):
             try:
-                with open(local_path, 'rb') as f: content = f.read()
+                with open(local_path, 'rb') as f:
+                    content = f.read()
                 pos = content.find(b'</head>')
                 body = content[:pos] + JS_BYPASS + content[pos:] if pos != -1 else JS_BYPASS + content
                 self.send_response(200)
@@ -45,11 +59,15 @@ class AntiCacheHandler(http.server.SimpleHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(body)
                 return
-            except: pass
+            except:
+                pass
+        
         return super().do_GET()
 
 if __name__ == '__main__':
     socketserver.TCPServer.allow_reuse_address = True
     with socketserver.TCPServer(("", PORT), AntiCacheHandler) as httpd:
-        try: httpd.serve_forever()
-        except KeyboardInterrupt: httpd.server_close()
+        try:
+            httpd.serve_forever()
+        except KeyboardInterrupt:
+            httpd.server_close()
