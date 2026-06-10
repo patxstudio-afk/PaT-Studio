@@ -15,21 +15,18 @@ const _f=window.fetch;window.fetch=(u,o)=>{if(typeof u==='string')u+=(u.includes
 </script>"""
 
 def find_file_case_insensitive(path):
-    if os.path.exists(path):
-        return path
+    """Find file with case-insensitive fallback and .html extension"""
+    candidates = [
+        path,
+        path.lower(),
+        f"{path}.html",
+        f"{path.lower()}.html"
+    ]
     
-    path_lower = path.lower()
-    if path_lower != path and os.path.exists(path_lower):
-        return path_lower
-    
-    if not path_lower.endswith('.html'):
-        path_with_html = path + '.html'
-        if os.path.exists(path_with_html):
-            return path_with_html
-        
-        path_lower_with_html = path_lower + '.html'
-        if path_lower_with_html != path_with_html and os.path.exists(path_lower_with_html):
-            return path_lower_with_html
+    for candidate in candidates:
+        if candidate != path or candidate != path.lower():  # Skip duplicates
+            if os.path.isfile(candidate):
+                return candidate
     
     return None
 
@@ -49,13 +46,32 @@ class AntiCacheHandler(http.server.SimpleHTTPRequestHandler):
         else:
             final_path = find_file_case_insensitive(request_path)
             
-            if not final_path:
-                final_path = 'index.html'
+        if not final_path or not os.path.isfile(final_path):
+            if os.path.isfile('404.html'):
+                try:
+                    with open('404.html', 'rb') as f:
+                        content = f.read()
+                    
+                    pos = content.find(b'</head>')
+                    if pos != -1:
+                        body = content[:pos] + JS_BYPASS + content[pos:]
+                    else:
+                        body = JS_BYPASS + content
+                    
+                    self.send_response(404)
+                    self.send_header('Content-Type', 'text/html; charset=utf-8')
+                    self.send_header('Content-Length', len(body))
+                    self.end_headers()
+                    self.wfile.write(body)
+                    return
+                except Exception as e:
+                    self.send_error(404)
+                    return
+            else:
+                self.send_error(404)
+                return
 
-        if not os.path.exists(final_path):
-            final_path = '404.html' if os.path.exists('404.html') else 'index.html'
-
-        if final_path.endswith('.html') and os.path.exists(final_path):
+        if final_path.endswith('.html'):
             try:
                 with open(final_path, 'rb') as f:
                     content = f.read()
@@ -75,13 +91,14 @@ class AntiCacheHandler(http.server.SimpleHTTPRequestHandler):
             except Exception as e:
                 self.send_error(500)
                 return
-
+    
         self.send_error(404)
 
 if __name__ == '__main__':
     socketserver.TCPServer.allow_reuse_address = True
     with socketserver.TCPServer(("", PORT), AntiCacheHandler) as httpd:
         try:
+            print(f"Server running on port {PORT}")
             httpd.serve_forever()
         except KeyboardInterrupt:
             httpd.server_close()
